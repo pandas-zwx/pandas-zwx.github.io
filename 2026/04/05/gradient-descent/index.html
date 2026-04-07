@@ -33,11 +33,12 @@
 <meta property="og:image" content="https://pandas-zwx.github.io/images/gradient_descent/NNLS.png">
 <meta property="og:image" content="https://pandas-zwx.github.io/images/gradient_descent/chatGPT.png">
 <meta property="og:image" content="https://pandas-zwx.github.io/images/gradient_descent/derivate.png">
+<meta property="og:image" content="https://pandas-zwx.github.io/2026/04/05/gradient-descent/example_derivative.jpg">
 <meta property="og:image" content="https://pandas-zwx.github.io/images/gradient_descent/out.png">
 <meta property="og:image" content="https://pandas-zwx.github.io/images/gradient_descent/in.png">
 <meta property="og:image" content="https://pandas-zwx.github.io/2026/04/05/gradient-descent/cfDNA.png">
 <meta property="article:published_time" content="2026-04-05T10:02:27.000Z">
-<meta property="article:modified_time" content="2026-04-05T10:22:46.550Z">
+<meta property="article:modified_time" content="2026-04-07T15:45:47.485Z">
 <meta property="article:author" content="Pandas-zwx">
 <meta property="article:tag" content="Cats, Dogs, Chatting, Bragging, Student Life">
 <meta name="twitter:card" content="summary">
@@ -202,9 +203,15 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">Posted on</span>
-      
 
-      <time title="Created: 2026-04-05 18:02:27 / Modified: 18:22:46" itemprop="dateCreated datePublished" datetime="2026-04-05T18:02:27+08:00">2026-04-05</time>
+      <time title="Created: 2026-04-05 18:02:27" itemprop="dateCreated datePublished" datetime="2026-04-05T18:02:27+08:00">2026-04-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2026-04-07 23:45:47" itemprop="dateModified" datetime="2026-04-07T23:45:47+08:00">2026-04-07</time>
     </span>
 
   
@@ -263,7 +270,13 @@
   <figcaption>图6 常用矩阵求导</figcaption>
 </figure>
 
-<p>这里我们使用 NNLS 时的 loss 函数是：Loss = (Ax - M)^2, 用到的是第三个求导法则。</p>
+<p>这里我们使用 NNLS 时的 loss 函数是：Loss = (Ax - M)^2, 用到的是第三个求导法则,其详细求导过程如下：</p>
+<figure>
+  <img src="example_derivative.jpg" alt="example_derivative">
+  <figcaption>详细求导过程</figcaption>
+</figure>
+
+
 <h1 id="3-运行结果"><a href="#3-运行结果" class="headerlink" title="3 运行结果"></a>3 运行结果</h1><figure>
   <img src="/images/gradient_descent/out.png" alt="远远的看">
   <figcaption>图7 远远的看</figcaption>
@@ -287,6 +300,7 @@
 </figure>
 
 <p>除此之外，在梯度下降找到最优解的时候还存在一个问题就是局部最优解，我目前能想到的解决办法是使用stochastic gradient descent(随机梯度下降)方法。随机梯度下降与batch gradient descent(批量梯度下降)相比，随机梯度下降更随机(随机选择一个样本计算梯度)，在一定程度上能够帮助逃离较差的局部最优解，避免卡在平坦区域和鞍点上。</p>
+<p>在 AI 可解释性领域(方面)会用到梯度分析法：<br>当模型训练完成(参数固定下来之后), 此时，参数不再是自变量，而输入数据变成了自变量，此时输入数据为 A, 然后得到loss, loss对输入数据A求导，得到loss关于A的梯度(这里的梯度已经不是梯度下降时指示参数更新方向的用途了,而是计算loss对A的敏感程度了,可以理解成斜率)，如果此时梯度很大，说明A很重要，A改变一点loss会改变很大。一般还会做这个操作：A * A_grad,因为如果 A 的梯度很大，但是 A 本身的值很小，那么影响说不定也可以忽略不计，所以需要与自身的值相乘来得到一个更有价值的信息。除了与自身值相乘外,还有种方法叫：积分梯度，这个涉及到了路径积分，很有意思哦。</p>
 <p>最近好久没更新，心血来潮，更新了一下，梯度下降算是机器学习/深度学习领域的基石，其核心是方向导数和链式法则。学习道路上总是充满着好奇和疑惑，想起罗素的一句话:<br>“The trouble with the world is that the stupid are cocksure and the intelligent are full of doubt.”<br>所以有疑惑的人就是聪明人，我是聪明人，如是而已，哈哈哈。</p>
 
       </div>
