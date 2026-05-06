@@ -1432,7 +1432,7 @@ pre code {
   vertical-align: middle;
 }
 .links-of-author a::before {
-  background: #a68aff;
+  background: #ffd94d;
   display: inline-block;
   margin-right: 3px;
   transform: translateY(-2px);
@@ -2798,4 +2798,27 @@ body {
   color: #666;
   background: #f8f8f8;
   padding-right: 10px;
+}
+.post-toc {
+  margin-top: 28px;
+  font-size: 15px;
+  line-height: 1.9;
+}
+.post-toc .nav-item {
+  margin: 10px 0;
+}
+.post-toc .nav-link {
+  padding: 3px 0;
+  line-height: 1.8;
+  white-space: normal;
+  word-break: break-word;
+}
+.post-toc .nav-link.active {
+  font-weight: 600;
+}
+.sidebar-nav {
+  margin-bottom: 22px;
+}
+.sidebar-inner {
+  padding-top: 28px;
 }
