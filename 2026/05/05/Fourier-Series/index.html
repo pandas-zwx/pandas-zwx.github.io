@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 5.4.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"pandas-zwx.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.26.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"github","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"mac"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"utterances","active":"utterances","storage":true,"lazyload":false,"display":"post","nav":null,"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="1 背景傅里叶级数在第一类间断点的收敛情况设 $x_0$ 是 $f(x)$ 的第一类间断点，则其傅里叶级数在该点收敛于： $$S(x_0) &#x3D; \frac{f(x_0^+) + f(x_0^-)}{2}$$ 其中 $f(x_0^+)$ 和 $f(x_0^-)$ 分别表示右极限和左极限。 在这个 blog 中我将会证明为什么傅里叶级数在间断点的值等于函数f(x)在该间断点的左右极限之和的一半。(La">
+<meta property="og:type" content="article">
+<meta property="og:title" content="傅里叶级数的吉布斯现象和在第一类间断点的收敛情况">
+<meta property="og:url" content="https://pandas-zwx.github.io/2026/05/05/Fourier-Series/index.html">
+<meta property="og:site_name" content="Welcome to Pandas-zwx&#39;s channel">
+<meta property="og:description" content="1 背景傅里叶级数在第一类间断点的收敛情况设 $x_0$ 是 $f(x)$ 的第一类间断点，则其傅里叶级数在该点收敛于： $$S(x_0) &#x3D; \frac{f(x_0^+) + f(x_0^-)}{2}$$ 其中 $f(x_0^+)$ 和 $f(x_0^-)$ 分别表示右极限和左极限。 在这个 blog 中我将会证明为什么傅里叶级数在间断点的值等于函数f(x)在该间断点的左右极限之和的一半。(La">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://pandas-zwx.github.io/2026/05/05/Fourier-Series/Gibbs.png">
+<meta property="og:image" content="https://pandas-zwx.github.io/2026/05/05/Fourier-Series/方波FS.jpg">
+<meta property="og:image" content="https://pandas-zwx.github.io/2026/05/05/Fourier-Series/1_1.jpg">
+<meta property="og:image" content="https://pandas-zwx.github.io/2026/05/05/Fourier-Series/1_2.jpg">
+<meta property="og:image" content="https://pandas-zwx.github.io/2026/05/05/Fourier-Series/1_3.jpg">
+<meta property="og:image" content="https://pandas-zwx.github.io/2026/05/05/Fourier-Series/2_1.jpg">
+<meta property="og:image" content="https://pandas-zwx.github.io/2026/05/05/Fourier-Series/2_2.jpg">
+<meta property="og:image" content="https://pandas-zwx.github.io/2026/05/05/Fourier-Series/2_3.jpg">
+<meta property="og:image" content="https://pandas-zwx.github.io/2026/05/05/Fourier-Series/jump_in.png">
+<meta property="article:published_time" content="2026-05-05T14:10:48.000Z">
+<meta property="article:modified_time" content="2026-05-06T07:35:07.771Z">
+<meta property="article:author" content="Pandas-zwx">
+<meta property="article:tag" content="Cats, Dogs, Chatting, Bragging, Student Life">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://pandas-zwx.github.io/2026/05/05/Fourier-Series/Gibbs.png">
+
+
+<link rel="canonical" href="https://pandas-zwx.github.io/2026/05/05/Fourier-Series/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://pandas-zwx.github.io/2026/05/05/Fourier-Series/","path":"2026/05/05/Fourier-Series/","title":"傅里叶级数的吉布斯现象和在第一类间断点的收敛情况"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>傅里叶级数的吉布斯现象和在第一类间断点的收敛情况 | Welcome to Pandas-zwx's channel</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Welcome to Pandas-zwx's channel</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Chatty Animal Lover 🐾</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">1 背景</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%82%85%E9%87%8C%E5%8F%B6%E7%BA%A7%E6%95%B0%E5%9C%A8%E7%AC%AC%E4%B8%80%E7%B1%BB%E9%97%B4%E6%96%AD%E7%82%B9%E7%9A%84%E6%94%B6%E6%95%9B%E6%83%85%E5%86%B5"><span class="nav-number">1.1.</span> <span class="nav-text">傅里叶级数在第一类间断点的收敛情况</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%89%E5%B8%83%E6%96%AF%E7%8E%B0%E8%B1%A1-Gibbs-Phenomenon"><span class="nav-number">1.2.</span> <span class="nav-text">吉布斯现象(Gibbs Phenomenon)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-Questions"><span class="nav-number">2.</span> <span class="nav-text">2 Questions</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%E8%A7%A3%E7%AD%94"><span class="nav-number">3.</span> <span class="nav-text">3 解答</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-%E4%B8%BA%E4%BB%80%E4%B9%88%E5%9C%A8f-x-%E9%97%B4%E6%96%AD%E7%82%B9%E7%9A%84%E5%82%85%E9%87%8C%E5%8F%B6%E7%BA%A7%E6%95%B0%E6%94%B6%E6%95%9B%E4%BA%8E-%E9%97%B4%E6%96%AD%E7%82%B9%E5%B7%A6%E6%9E%81%E9%99%90-%E9%97%B4%E6%96%AD%E7%82%B9%E5%8F%B3%E6%9E%81%E9%99%90-2-%EF%BC%9F"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 为什么在f(x)间断点的傅里叶级数收敛于: (间断点左极限 + 间断点右极限) &#x2F; 2 ？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-Gibbs%E7%8E%B0%E8%B1%A1%E7%9A%84%E9%9C%87%E8%8D%A1%E7%9A%84%E5%B9%85%E5%BA%A6%E6%98%AF%E9%9A%8F%E6%9C%BA%E7%9A%84%E8%BF%98%E6%98%AF%E8%B6%8B%E8%BF%91%E4%BA%8E%E4%B8%80%E4%B8%AA%E5%AE%9A%E5%80%BC%EF%BC%9F"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 Gibbs现象的震荡的幅度是随机的还是趋近于一个定值？</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-%E5%86%99%E5%9C%A8%E6%9C%80%E5%90%8E"><span class="nav-number">4.</span> <span class="nav-text">4 写在最后</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-%E4%B8%8B%E6%9C%9F%E9%A2%84%E5%91%8A"><span class="nav-number">5.</span> <span class="nav-text">5 下期预告</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Pandas-zwx</p>
+  <div class="site-description" itemprop="description">Undergraduate at Yunnan University, Master student at Fudan University Institutes of Biomedical Sciences. Love chatting, cats, dogs, and bragging.</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://pandas-zwx.github.io/2026/05/05/Fourier-Series/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Pandas-zwx">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Welcome to Pandas-zwx's channel">
+      <meta itemprop="description" content="Undergraduate at Yunnan University, Master student at Fudan University Institutes of Biomedical Sciences. Love chatting, cats, dogs, and bragging.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="傅里叶级数的吉布斯现象和在第一类间断点的收敛情况 | Welcome to Pandas-zwx's channel">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          傅里叶级数的吉布斯现象和在第一类间断点的收敛情况
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2026-05-05 22:10:48" itemprop="dateCreated datePublished" datetime="2026-05-05T22:10:48+08:00">2026-05-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2026-05-06 15:35:07" itemprop="dateModified" datetime="2026-05-06T15:35:07+08:00">2026-05-06</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+      
+      <div class="post-body" itemprop="articleBody"><h1 id="1-背景"><a href="#1-背景" class="headerlink" title="1 背景"></a>1 背景</h1><h2 id="傅里叶级数在第一类间断点的收敛情况"><a href="#傅里叶级数在第一类间断点的收敛情况" class="headerlink" title="傅里叶级数在第一类间断点的收敛情况"></a>傅里叶级数在第一类间断点的收敛情况</h2><p>设 $x_0$ 是 $f(x)$ 的第一类间断点，则其傅里叶级数在该点收敛于：</p>
+<p>$$<br>S(x_0) = \frac{f(x_0^+) + f(x_0^-)}{2}<br>$$</p>
+<p>其中 $f(x_0^+)$ 和 $f(x_0^-)$ 分别表示右极限和左极限。</p>
+<p>在这个 blog 中我将会证明为什么傅里叶级数在间断点的值等于函数f(x)在该间断点的左右极限之和的一半。<br>(LaTeX 感觉不是很习惯， 下面我将在纸上进行书写)</p>
+<h2 id="吉布斯现象-Gibbs-Phenomenon"><a href="#吉布斯现象-Gibbs-Phenomenon" class="headerlink" title="吉布斯现象(Gibbs Phenomenon)"></a>吉布斯现象(Gibbs Phenomenon)</h2><p>存在第一类间断点的周期函数由傅里叶级数去表示时，在间断点附近会出现振荡现象，这种现象称为吉布斯现象。图1是下面代码的运行结果。其中这个方波是一个周期为 2π 的函数，在 kπ 处为间断点，横坐标中我标注出了 5 个间断点：-2π, -π, 0, π, 2π。我们可以从图中看到，在间断点附近，傅里叶级数会冒出来一部分高的（过冲 overshoot），也会低出来一部分（低冲 undershoot），这就是吉布斯现象。注意，吉布斯现象是出现在间断点附近哦，并不是间断点，在间断点，傅里叶级数是收敛于函数f(x)在该间断点的左右极限之和的一半。除此之外，这个震荡现象并不会随着傅里叶级数的项数的增加而减小，而是随着傅里叶项数的增加，最大过冲点的横坐标逐渐靠近间断点的横坐标，并且最大过冲值是逐渐趋近于一个定值，在这个 blog 中我将会以方波为例子证明（方波证明起来比较简单，一般函数的比较复杂，哈哈哈）。</p>
+<p>吉布斯现象的代码演示：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line"><span class="comment"># x 范围</span></span><br><span class="line">x = np.linspace(-<span class="number">2</span> * np.pi, <span class="number">2</span> * np.pi, <span class="number">2000</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 原始方波函数：周期为 2π，在 kπ 处为第一类间断点</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">square_wave_periodic</span>(<span class="params">x</span>):</span><br><span class="line">    y = np.where(np.sin(x) &gt;= <span class="number">0</span>, <span class="number">1.0</span>, -<span class="number">1.0</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 在间断点 kπ 处不定义，用 nan 避免画出竖直连线</span></span><br><span class="line">    y[np.isclose(np.sin(x), <span class="number">0</span>, atol=<span class="number">1e-12</span>)] = np.nan</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> y</span><br><span class="line"></span><br><span class="line">square_wave = square_wave_periodic(x)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 傅里叶级数近似方波</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">fourier_square_wave</span>(<span class="params">x, N</span>):</span><br><span class="line">    y = np.zeros_like(x)</span><br><span class="line">    <span class="keyword">for</span> n <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, N + <span class="number">1</span>, <span class="number">2</span>):</span><br><span class="line">        y += (<span class="number">4</span> / np.pi) * np.sin(n * x) / n</span><br><span class="line">    <span class="keyword">return</span> y</span><br><span class="line"></span><br><span class="line"><span class="comment"># 取不同项数的傅里叶近似</span></span><br><span class="line">terms = [<span class="number">1</span>, <span class="number">3</span>, <span class="number">9</span>, <span class="number">49</span>]</span><br><span class="line"></span><br><span class="line">plt.figure(figsize=(<span class="number">9</span>, <span class="number">5</span>))</span><br><span class="line"></span><br><span class="line">plt.plot(x, square_wave, <span class="string">&#x27;k--&#x27;</span>, label=<span class="string">&#x27;Original square wave&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> N <span class="keyword">in</span> terms:</span><br><span class="line">    y = fourier_square_wave(x, N)</span><br><span class="line">    plt.plot(x, y, label=<span class="string">f&#x27;N = <span class="subst">&#123;N&#125;</span>&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 标出间断点 kπ</span></span><br><span class="line"><span class="keyword">for</span> k <span class="keyword">in</span> <span class="built_in">range</span>(-<span class="number">2</span>, <span class="number">3</span>):</span><br><span class="line">    plt.axvline(k * np.pi, color=<span class="string">&#x27;gray&#x27;</span>, linestyle=<span class="string">&#x27;:&#x27;</span>, alpha=<span class="number">0.5</span>)</span><br><span class="line"></span><br><span class="line">plt.title(<span class="string">&#x27;Gibbs Phenomenon for a 2π-periodic Square Wave&#x27;</span>)</span><br><span class="line">plt.xlabel(<span class="string">&#x27;x&#x27;</span>)</span><br><span class="line">plt.ylabel(<span class="string">&#x27;f(x)&#x27;</span>)</span><br><span class="line">plt.ylim(-<span class="number">1.5</span>, <span class="number">1.5</span>)</span><br><span class="line"></span><br><span class="line">plt.xticks(</span><br><span class="line">    [-<span class="number">2</span>*np.pi, -np.pi, <span class="number">0</span>, np.pi, <span class="number">2</span>*np.pi],</span><br><span class="line">    [<span class="string">r&#x27;$-2\pi$&#x27;</span>, <span class="string">r&#x27;$-\pi$&#x27;</span>, <span class="string">&#x27;0&#x27;</span>, <span class="string">r&#x27;$\pi$&#x27;</span>, <span class="string">r&#x27;$2\pi$&#x27;</span>]</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">plt.legend()</span><br><span class="line">plt.grid(<span class="literal">True</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p>代码的运行结果：</p>
+<figure>
+  <img src="Gibbs.png" alt="Gibbs Phenomenon">
+  <figcaption>图1 Gibbs Phenomenon</figcaption>
+</figure>
+
+
+<p>代码中的 “y += (4 / np.pi) * np.sin(n * x) / n” 是方波的傅里叶级数(其中 n 为奇数)，其推导过程如图2。</p>
+<figure>
+  <img src="方波FS.jpg" alt="方波的FS">
+  <figcaption>图2 方波的傅里叶级数的推导</figcaption>
+</figure>
+
+
+
+
+<h1 id="2-Questions"><a href="#2-Questions" class="headerlink" title="2 Questions"></a>2 Questions</h1><p>在上面的背景中，我引出了两个问题：<br>1.为什么在f(x)间断点的傅里叶级数收敛于: (间断点左极限 + 间断点右极限) / 2</p>
+<p>2.Gibbs现象的震荡的幅度是随机的还是趋近于一个定值？</p>
+<h1 id="3-解答"><a href="#3-解答" class="headerlink" title="3 解答"></a>3 解答</h1><h2 id="3-1-为什么在f-x-间断点的傅里叶级数收敛于-间断点左极限-间断点右极限-2-？"><a href="#3-1-为什么在f-x-间断点的傅里叶级数收敛于-间断点左极限-间断点右极限-2-？" class="headerlink" title="3.1 为什么在f(x)间断点的傅里叶级数收敛于: (间断点左极限 + 间断点右极限) / 2 ？"></a>3.1 为什么在f(x)间断点的傅里叶级数收敛于: (间断点左极限 + 间断点右极限) / 2 ？</h2><p>在这一个部分的证明过程中用到了：<br>1.Dirichlet 核<br>2.Riemann-Lebesgue 引理</p>
+<figure>
+  <img src="1_1.jpg" alt="1_1">
+  <figcaption>图3 问题3.1推导</figcaption>
+</figure>
+
+<figure>
+  <img src="1_2.jpg" alt="1_2">
+  <figcaption>图4 问题3.1推导</figcaption>
+</figure>
+
+<figure>
+  <img src="1_3.jpg" alt="1_3">
+  <figcaption>图5 问题3.1推导</figcaption>
+</figure>
+
+
+<h2 id="3-2-Gibbs现象的震荡的幅度是随机的还是趋近于一个定值？"><a href="#3-2-Gibbs现象的震荡的幅度是随机的还是趋近于一个定值？" class="headerlink" title="3.2 Gibbs现象的震荡的幅度是随机的还是趋近于一个定值？"></a>3.2 Gibbs现象的震荡的幅度是随机的还是趋近于一个定值？</h2><figure>
+  <img src="2_1.jpg" alt="1_1">
+  <figcaption>图6 问题3.2推导</figcaption>
+</figure>
+
+<figure>
+  <img src="2_2.jpg" alt="1_2">
+  <figcaption>图7 问题3.2推导</figcaption>
+</figure>
+
+<figure>
+  <img src="2_3.jpg" alt="1_3">
+  <figcaption>图8 问题3.2推导</figcaption>
+</figure>
+
+
+<p>在这些证明过程中，我们得到两个有价值的信息：<br>1.第一个最大过冲点：π/2N, 可以知道，随着傅里叶级数项数的增加，第一个最大过冲点的横坐标逐渐趋近于最近的间断点的横坐标。<br>2.震荡的幅度不是随机的，而是一个常数，名为 Gibbs 常数，大约为 0.08949。</p>
+<p>python 代码演示 Gibbs现象</p>
+<figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">import numpy as <span class="built_in">np</span></span><br><span class="line">import matplotlib.pyplot as plt</span><br><span class="line"></span><br><span class="line">def fourier_square_wave(x, N):</span><br><span class="line">    y = <span class="built_in">np</span>.zeros_like(x)</span><br><span class="line">    <span class="keyword">for</span> k <span class="keyword">in</span> <span class="built_in">range</span>(N):</span><br><span class="line">        n = <span class="number">2</span>*k + <span class="number">1</span></span><br><span class="line">        y += <span class="built_in">np</span>.<span class="built_in">sin</span>(n * x) / n</span><br><span class="line">    <span class="built_in">return</span> <span class="number">4</span> / <span class="built_in">np</span>.pi * y</span><br><span class="line"></span><br><span class="line">N = <span class="number">100000</span></span><br><span class="line"></span><br><span class="line"># 只看跳跃点右侧非常小的范围</span><br><span class="line">x = <span class="built_in">np</span>.linspace(<span class="number">0</span>, <span class="number">0.001</span>, <span class="number">5000</span>)</span><br><span class="line">y = fourier_square_wave(x, N)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;最大值:&quot;</span>, y.<span class="built_in">max</span>())</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;最大值位置 x =&quot;</span>, x[<span class="built_in">np</span>.argmax(y)])</span><br><span class="line"></span><br><span class="line">plt.figure(figsize=(<span class="number">10</span>, <span class="number">5</span>))</span><br><span class="line">plt.plot(x, y, <span class="built_in">label</span>=f<span class="string">&quot;N=&#123;N&#125;&quot;</span>)</span><br><span class="line">plt.axhline(<span class="number">1</span>, linestyle=<span class="string">&quot;--&quot;</span>, <span class="built_in">label</span>=<span class="string">&quot;square wave upper value = 1&quot;</span>)</span><br><span class="line">plt.axhline(<span class="number">1.17898</span>, linestyle=<span class="string">&quot;--&quot;</span>, <span class="built_in">label</span>=<span class="string">&quot;Gibbs limit ≈ 1.17898&quot;</span>)</span><br><span class="line">plt.<span class="built_in">title</span>(<span class="string">&quot;Zoom near the jump point&quot;</span>)</span><br><span class="line">plt.<span class="built_in">xlabel</span>(<span class="string">&quot;x&quot;</span>)</span><br><span class="line">plt.<span class="built_in">ylabel</span>(<span class="string">&quot;S_N(x)&quot;</span>)</span><br><span class="line">plt.<span class="built_in">grid</span>(True)</span><br><span class="line">plt.<span class="built_in">legend</span>()</span><br><span class="line">plt.<span class="built_in">show</span>()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>返回的结果：</p>
+<figure class="highlight fix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">最大值: 1.1789431642263213</span></span><br><span class="line"><span class="attr">最大值位置 x </span>=<span class="string"> 1.5803160632126427e-05</span></span><br></pre></td></tr></table></figure>
+
+<figure>
+  <img src="jump_in.png" alt="jump_in.png">
+  <figcaption>图9 取100000项拟合，并放大看间断点附近的震荡情况</figcaption>
+</figure>
+
+<p>从图9中可以看到，取了100000项之后，最大过冲点已经非常靠近间断点了，并且最大过冲点的函数值是符合我们的计算的，大约是1.1789。</p>
+<h1 id="4-写在最后"><a href="#4-写在最后" class="headerlink" title="4 写在最后"></a>4 写在最后</h1><p>傅里叶级数的本质，是用一组正交函数逐步逼近目标函数。由于正弦函数和余弦函数本身都是光滑的，当我们试图用这些光滑函数去逼近带有跳跃间断的方波时，某种“异常”几乎是不可避免的。这也正是当年傅里叶的工作受到拉格朗日质疑的重要原因之一。</p>
+<p>在这篇 blog 中，我们围绕吉布斯现象做了一些较为深入的讨论：它并不是计算误差，也不会随着项数增加而简单消失；相反，它揭示了傅里叶级数在处理间断函数时一个非常本质的特征。理解这一点，不仅有助于我们更准确地认识傅里叶级数，也能帮助我们更理性地看待“逼近”本身的局限。</p>
+<h1 id="5-下期预告"><a href="#5-下期预告" class="headerlink" title="5 下期预告"></a>5 下期预告</h1><p>傅里叶变换</p>
+
+      </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2026/04/05/gradient-descent/" rel="prev" title="梯度下降的原理及可视化">
+                  <i class="fa fa-angle-left"></i> 梯度下降的原理及可视化
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Pandas-zwx</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"pandas-zwx/pandas-zwx.github.io","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js" defer></script>
+
+</body>
+</html>
