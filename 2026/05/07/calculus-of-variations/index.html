@@ -33,8 +33,9 @@
 <meta property="og:image" content="https://pandas-zwx.github.io/2026/05/07/calculus-of-variations/2_1.png">
 <meta property="og:image" content="https://pandas-zwx.github.io/2026/05/07/calculus-of-variations/2_2.png">
 <meta property="og:image" content="https://pandas-zwx.github.io/2026/05/07/calculus-of-variations/3_1.png">
+<meta property="og:image" content="https://pandas-zwx.github.io/2026/05/07/calculus-of-variations/4_1.png">
 <meta property="article:published_time" content="2026-05-07T08:52:01.000Z">
-<meta property="article:modified_time" content="2026-05-07T09:17:25.038Z">
+<meta property="article:modified_time" content="2026-05-07T09:28:28.303Z">
 <meta property="article:author" content="Pandas-zwx">
 <meta property="article:tag" content="最速降线问题">
 <meta name="twitter:card" content="summary">
@@ -249,7 +250,7 @@ mjx-container[display="true"] + br {
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-The-brachistochrone-problem%EF%BC%88%E6%9C%80%E9%80%9F%E9%99%8D%E7%BA%BF%E9%97%AE%E9%A2%98%EF%BC%89%E7%9A%84%E8%83%8C%E6%99%AF"><span class="nav-text">1 The brachistochrone problem（最速降线问题）的背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E6%AC%A7%E6%8B%89-%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5%E6%96%B9%E7%A8%8B%E7%9A%84%E6%8E%A8%E5%AF%BC"><span class="nav-text">2 欧拉-拉格朗日方程的推导</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%E5%BA%94%E7%94%A8%E5%8F%98%E5%88%86%E6%B3%95%E8%A7%A3%E5%86%B3%E6%9C%80%E9%80%9F%E9%99%8D%E7%BA%BF%E9%97%AE%E9%A2%98"><span class="nav-text">3 应用变分法解决最速降线问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-%E5%BA%94%E7%94%A8%E5%85%89%E7%9A%84%E7%B1%BB%E6%AF%94%E8%A7%A3%E5%86%B3%E6%9C%80%E9%80%9F%E9%99%8D%E7%BA%BF%E9%97%AE%E9%A2%98"><span class="nav-text">4 应用光的类比解决最速降线问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-%E5%86%99%E5%9C%A8%E6%9C%80%E5%90%8E"><span class="nav-text">5 写在最后</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-The-brachistochrone-problem%EF%BC%88%E6%9C%80%E9%80%9F%E9%99%8D%E7%BA%BF%E9%97%AE%E9%A2%98%EF%BC%89%E7%9A%84%E8%83%8C%E6%99%AF"><span class="nav-text">1 The brachistochrone problem（最速降线问题）的背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E6%AC%A7%E6%8B%89-%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5%E6%96%B9%E7%A8%8B%E7%9A%84%E6%8E%A8%E5%AF%BC"><span class="nav-text">2 欧拉-拉格朗日方程的推导</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%E5%BA%94%E7%94%A8%E5%8F%98%E5%88%86%E6%B3%95%E8%A7%A3%E5%86%B3%E6%9C%80%E9%80%9F%E9%99%8D%E7%BA%BF%E9%97%AE%E9%A2%98"><span class="nav-text">3 应用变分法解决最速降线问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-%E5%BA%94%E7%94%A8%E5%85%89%E7%9A%84%E7%B1%BB%E6%AF%94%E8%A7%A3%E5%86%B3%E6%9C%80%E9%80%9F%E9%99%8D%E7%BA%BF%E9%97%AE%E9%A2%98"><span class="nav-text">4 应用光的类比解决最速降线问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-%E8%AF%81%E6%98%8E%E6%9C%80%E9%80%9F%E9%99%8D%E7%BA%BF%E4%B8%BA%E7%AD%89%E6%97%B6%E7%BA%BF"><span class="nav-text">5 证明最速降线为等时线</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-%E5%86%99%E5%9C%A8%E6%9C%80%E5%90%8E"><span class="nav-text">6 写在最后</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -330,7 +331,7 @@ mjx-container[display="true"] + br {
       <span class="post-meta-item-text">Posted on</span>
       
 
-      <time title="Created: 2026-05-07 16:52:01 / Modified: 17:17:25" itemprop="dateCreated datePublished" datetime="2026-05-07T16:52:01+08:00">2026-05-07</time>
+      <time title="Created: 2026-05-07 16:52:01 / Modified: 17:28:28" itemprop="dateCreated datePublished" datetime="2026-05-07T16:52:01+08:00">2026-05-07</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -385,7 +386,14 @@ mjx-container[display="true"] + br {
 </figure>
 
 
-<h1 id="5-写在最后"><a href="#5-写在最后" class="headerlink" title="5 写在最后"></a>5 写在最后</h1><p>在这个 blog 中，我使用了变分法和光的类比的方法去解决最速降线问题，我个人比较喜欢变分法，主要也是没怎么接触过泛函数这个概念，所以觉得有意思。泛函数是一个输入为函数输出为实数的函数，就是以函数为自变量的函数，这是我现在的理解。在推导欧拉-拉格朗日方程的时候，可能有一些关于泛函数的笔误，请多多谅解。</p>
+<h1 id="5-证明最速降线为等时线"><a href="#5-证明最速降线为等时线" class="headerlink" title="5 证明最速降线为等时线"></a>5 证明最速降线为等时线</h1><p>最速降线，又叫摆线，轮线，还有一个有趣的性质就是：<br><strong>在无摩擦、只受重力作用的理想条件下，一个小球从摆线轨道上的任意一点由静止释放，滑到最低点所需的时间都相同。</strong></p>
+<figure>
+  <img src="4_1.png" alt="4_1">
+  <figcaption>图7 证明最速降线为等时线</figcaption>
+</figure>
+
+
+<h1 id="6-写在最后"><a href="#6-写在最后" class="headerlink" title="6 写在最后"></a>6 写在最后</h1><p>在这个 blog 中，我使用了变分法和光的类比的方法去解决最速降线问题，我个人比较喜欢变分法，主要也是没怎么接触过泛函数这个概念，所以觉得有意思。泛函数是一个输入为函数输出为实数的函数，就是以函数为自变量的函数，这是我现在的理解。在推导欧拉-拉格朗日方程的时候，可能有一些关于泛函数的笔误，请多多谅解。</p>
 <p>最后，在这个 blog 中我并没有介绍牛顿的解法，实际上牛顿是用几何方法解决的这个问题，关于牛顿的解法可以参考：<a target="_blank" rel="noopener" href="https://mathshistory.st-andrews.ac.uk/HistTopics/Brachistochrone/">https://mathshistory.st-andrews.ac.uk/HistTopics/Brachistochrone/</a></p>
 
       </div>
