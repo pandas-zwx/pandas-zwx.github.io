@@ -27,11 +27,17 @@
 <meta property="og:site_name" content="Welcome to Pandas-zwx&#39;s channel">
 <meta property="og:description" content="1 等周问题的背景在古代地中海的传说中，迦太基王后黛多（Dido）从古泰尔国（Tyria）来到北非的地中海沿岸，开始建立自己的新城。当地一位酋长答应给她一块土地——条件是只能用一头牛的牛皮所能包围的范围。聪明的黛多没有浪费时间和牛皮，她把牛皮剪成极细的条，铺开成弯曲的围栏，利用北非海岸作为天然的边界，形成了一个半圆形的领地。 这个传奇其实隐藏着一个有趣的数学问题：在所有周长相同的封闭曲线中，哪种形">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://pandas-zwx.github.io/2026/05/07/isoperimetric-problem/1_1.jpg">
+<meta property="og:image" content="https://pandas-zwx.github.io/2026/05/07/isoperimetric-problem/1_2.jpg">
+<meta property="og:image" content="https://pandas-zwx.github.io/2026/05/07/isoperimetric-problem/1_3.jpg">
+<meta property="og:image" content="https://pandas-zwx.github.io/2026/05/07/isoperimetric-problem/1_4.jpg">
+<meta property="og:image" content="https://pandas-zwx.github.io/2026/05/07/isoperimetric-problem/1_5.jpg">
 <meta property="article:published_time" content="2026-05-07T09:58:31.000Z">
-<meta property="article:modified_time" content="2026-05-07T12:08:01.326Z">
+<meta property="article:modified_time" content="2026-05-08T07:20:20.536Z">
 <meta property="article:author" content="Pandas-zwx">
 <meta property="article:tag" content="等周问题">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://pandas-zwx.github.io/2026/05/07/isoperimetric-problem/1_1.jpg">
 
 
 <link rel="canonical" href="https://pandas-zwx.github.io/2026/05/07/isoperimetric-problem/">
@@ -242,7 +248,7 @@ mjx-container[display="true"] + br {
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E7%AD%89%E5%91%A8%E9%97%AE%E9%A2%98%E7%9A%84%E8%83%8C%E6%99%AF"><span class="nav-text">1 等周问题的背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E5%BA%94%E7%94%A8%E5%8F%98%E5%88%86%E6%B3%95%E8%A7%A3%E5%86%B3%E7%AD%89%E5%91%A8%E9%97%AE%E9%A2%98"><span class="nav-text">2 应用变分法解决等周问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%E7%AD%89%E5%91%A8%E4%B8%8D%E7%AD%89%E5%BC%8F"><span class="nav-text">3 等周不等式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-%E7%AD%89%E4%BB%B7%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-text">4 等价的问题</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E7%AD%89%E5%91%A8%E9%97%AE%E9%A2%98%E7%9A%84%E8%83%8C%E6%99%AF"><span class="nav-text">1 等周问题的背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E5%BA%94%E7%94%A8%E5%8F%98%E5%88%86%E6%B3%95%E8%A7%A3%E5%86%B3%E7%AD%89%E5%91%A8%E9%97%AE%E9%A2%98"><span class="nav-text">2 应用变分法解决等周问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%E7%AD%89%E5%91%A8%E4%B8%8D%E7%AD%89%E5%BC%8F"><span class="nav-text">3 等周不等式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-%E7%AD%89%E4%BB%B7%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-text">4 等价的问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-%E8%AE%A8%E8%AE%BA"><span class="nav-text">5 讨论</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -321,9 +327,15 @@ mjx-container[display="true"] + br {
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">Posted on</span>
-      
 
-      <time title="Created: 2026-05-07 17:58:31 / Modified: 20:08:01" itemprop="dateCreated datePublished" datetime="2026-05-07T17:58:31+08:00">2026-05-07</time>
+      <time title="Created: 2026-05-07 17:58:31" itemprop="dateCreated datePublished" datetime="2026-05-07T17:58:31+08:00">2026-05-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2026-05-08 15:20:20" itemprop="dateModified" datetime="2026-05-08T15:20:20+08:00">2026-05-08</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -348,7 +360,36 @@ mjx-container[display="true"] + br {
       <div class="post-body" itemprop="articleBody"><h1 id="1-等周问题的背景"><a href="#1-等周问题的背景" class="headerlink" title="1 等周问题的背景"></a>1 等周问题的背景</h1><p>在古代地中海的传说中，迦太基王后黛多（Dido）从古泰尔国（Tyria）来到北非的地中海沿岸，开始建立自己的新城。当地一位酋长答应给她一块土地——条件是只能用一头牛的牛皮所能包围的范围。聪明的黛多没有浪费时间和牛皮，她把牛皮剪成极细的条，铺开成弯曲的围栏，利用北非海岸作为天然的边界，形成了一个半圆形的领地。</p>
 <p>这个传奇其实隐藏着一个有趣的数学问题：<strong>在所有周长相同的封闭曲线中，哪种形状可以围出最大的面积？</strong></p>
 <p>在这个 blog 中我将使用变分法去解决这个问题。</p>
-<h1 id="2-应用变分法解决等周问题"><a href="#2-应用变分法解决等周问题" class="headerlink" title="2 应用变分法解决等周问题"></a>2 应用变分法解决等周问题</h1><h1 id="3-等周不等式"><a href="#3-等周不等式" class="headerlink" title="3 等周不等式"></a>3 等周不等式</h1><h1 id="4-等价的问题"><a href="#4-等价的问题" class="headerlink" title="4 等价的问题"></a>4 等价的问题</h1><p>平面上，在给定周长的所有闭曲线中，圆是具有最大面积的曲线。 反过来，所有围成的区域面积一定的闭曲线中，以圆的周长为最小。</p>
+<h1 id="2-应用变分法解决等周问题"><a href="#2-应用变分法解决等周问题" class="headerlink" title="2 应用变分法解决等周问题"></a>2 应用变分法解决等周问题</h1><p>在这个证明过程中使用到了：<br>1.格林公式<br>2.Wirtinger 不等式</p>
+<figure>
+  <img src="1_1.jpg" alt="1_1">
+  <figcaption>图1 应用变分法解决等周问题</figcaption>
+</figure>
+
+<figure>
+  <img src="1_2.jpg" alt="1_2">
+  <figcaption>图2 应用变分法解决等周问题</figcaption>
+</figure>
+
+<figure>
+  <img src="1_3.jpg" alt="1_3">
+  <figcaption>图3 应用变分法解决等周问题</figcaption>
+</figure>
+
+<figure>
+  <img src="1_4.jpg" alt="1_4">
+  <figcaption>图4 应用变分法解决等周问题</figcaption>
+</figure>
+
+<figure>
+  <img src="1_5.jpg" alt="1_5">
+  <figcaption>图5 应用变分法解决等周问题</figcaption>
+</figure>
+
+
+<h1 id="3-等周不等式"><a href="#3-等周不等式" class="headerlink" title="3 等周不等式"></a>3 等周不等式</h1><p><mjx-container class="MathJax" jax="SVG" display="true"><svg style="vertical-align: -0.452ex;" xmlns="http://www.w3.org/2000/svg" width="40.472ex" height="2.452ex" role="img" focusable="false" viewBox="0 -883.9 17888.8 1083.9"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="msup"><g data-mml-node="mi"><path data-c="1D43F" d="M228 637Q194 637 192 641Q191 643 191 649Q191 673 202 682Q204 683 217 683Q271 680 344 680Q485 680 506 683H518Q524 677 524 674T522 656Q517 641 513 637H475Q406 636 394 628Q387 624 380 600T313 336Q297 271 279 198T252 88L243 52Q243 48 252 48T311 46H328Q360 46 379 47T428 54T478 72T522 106T564 161Q580 191 594 228T611 270Q616 273 628 273H641Q647 264 647 262T627 203T583 83T557 9Q555 4 553 3T537 0T494 -1Q483 -1 418 -1T294 0H116Q32 0 32 10Q32 17 34 24Q39 43 44 45Q48 46 59 46H65Q92 46 125 49Q139 52 144 61Q147 65 216 339T285 628Q285 635 228 637Z"></path></g><g data-mml-node="mn" transform="translate(714,413) scale(0.707)"><path data-c="32" d="M109 429Q82 429 66 447T50 491Q50 562 103 614T235 666Q326 666 387 610T449 465Q449 422 429 383T381 315T301 241Q265 210 201 149L142 93L218 92Q375 92 385 97Q392 99 409 186V189H449V186Q448 183 436 95T421 3V0H50V19V31Q50 38 56 46T86 81Q115 113 136 137Q145 147 170 174T204 211T233 244T261 278T284 308T305 340T320 369T333 401T340 431T343 464Q343 527 309 573T212 619Q179 619 154 602T119 569T109 550Q109 549 114 549Q132 549 151 535T170 489Q170 464 154 447T109 429Z"></path></g></g><g data-mml-node="mo" transform="translate(1395.3,0)"><path data-c="2265" d="M83 616Q83 624 89 630T99 636Q107 636 253 568T543 431T687 361Q694 356 694 346T687 331Q685 329 395 192L107 56H101Q83 58 83 76Q83 77 83 79Q82 86 98 95Q117 105 248 167Q326 204 378 228L626 346L360 472Q291 505 200 548Q112 589 98 597T83 616ZM84 -118Q84 -108 99 -98H678Q694 -104 694 -118Q694 -130 679 -138H98Q84 -131 84 -118Z"></path></g><g data-mml-node="mn" transform="translate(2451.1,0)"><path data-c="34" d="M462 0Q444 3 333 3Q217 3 199 0H190V46H221Q241 46 248 46T265 48T279 53T286 61Q287 63 287 115V165H28V211L179 442Q332 674 334 675Q336 677 355 677H373L379 671V211H471V165H379V114Q379 73 379 66T385 54Q393 47 442 46H471V0H462ZM293 211V545L74 212L183 211H293Z"></path></g><g data-mml-node="mi" transform="translate(2951.1,0)"><path data-c="1D70B" d="M132 -11Q98 -11 98 22V33L111 61Q186 219 220 334L228 358H196Q158 358 142 355T103 336Q92 329 81 318T62 297T53 285Q51 284 38 284Q19 284 19 294Q19 300 38 329T93 391T164 429Q171 431 389 431Q549 431 553 430Q573 423 573 402Q573 371 541 360Q535 358 472 358H408L405 341Q393 269 393 222Q393 170 402 129T421 65T431 37Q431 20 417 5T381 -10Q370 -10 363 -7T347 17T331 77Q330 86 330 121Q330 170 339 226T357 318T367 358H269L268 354Q268 351 249 275T206 114T175 17Q164 -11 132 -11Z"></path></g><g data-mml-node="mi" transform="translate(3521.1,0)"><path data-c="1D446" d="M308 24Q367 24 416 76T466 197Q466 260 414 284Q308 311 278 321T236 341Q176 383 176 462Q176 523 208 573T273 648Q302 673 343 688T407 704H418H425Q521 704 564 640Q565 640 577 653T603 682T623 704Q624 704 627 704T632 705Q645 705 645 698T617 577T585 459T569 456Q549 456 549 465Q549 471 550 475Q550 478 551 494T553 520Q553 554 544 579T526 616T501 641Q465 662 419 662Q362 662 313 616T263 510Q263 480 278 458T319 427Q323 425 389 408T456 390Q490 379 522 342T554 242Q554 216 546 186Q541 164 528 137T492 78T426 18T332 -20Q320 -22 298 -22Q199 -22 144 33L134 44L106 13Q83 -14 78 -18T65 -22Q52 -22 52 -14Q52 -11 110 221Q112 227 130 227H143Q149 221 149 216Q149 214 148 207T144 186T142 153Q144 114 160 87T203 47T255 29T308 24Z"></path></g><g data-mml-node="mo" transform="translate(4166.1,0)"><path data-c="2C" d="M78 35T78 60T94 103T137 121Q165 121 187 96T210 8Q210 -27 201 -60T180 -117T154 -158T130 -185T117 -194Q113 -194 104 -185T95 -172Q95 -168 106 -156T131 -126T157 -76T173 -3V9L172 8Q170 7 167 6T161 3T152 1T140 0Q113 0 96 17Z"></path></g><g data-mml-node="mstyle" transform="translate(4444.1,0)"><g data-mml-node="mspace"></g></g><g data-mml-node="mtext" transform="translate(5610.8,0)"><text data-variant="normal" transform="scale(1,-1)" font-size="884px" font-family="serif">等</text><text data-variant="normal" transform="translate(1000,0) scale(1,-1)" font-size="884px" font-family="serif">号</text><text data-variant="normal" transform="translate(2000,0) scale(1,-1)" font-size="884px" font-family="serif">成</text><text data-variant="normal" transform="translate(3000,0) scale(1,-1)" font-size="884px" font-family="serif">立</text><text data-variant="normal" transform="translate(4000,0) scale(1,-1)" font-size="884px" font-family="serif">当</text><text data-variant="normal" transform="translate(5000,0) scale(1,-1)" font-size="884px" font-family="serif">且</text><text data-variant="normal" transform="translate(6000,0) scale(1,-1)" font-size="884px" font-family="serif">仅</text><text data-variant="normal" transform="translate(7000,0) scale(1,-1)" font-size="884px" font-family="serif">当</text><text data-variant="normal" transform="translate(8000,0) scale(1,-1)" font-size="884px" font-family="serif">曲</text><text data-variant="normal" transform="translate(9000,0) scale(1,-1)" font-size="884px" font-family="serif">线</text><text data-variant="normal" transform="translate(10000,0) scale(1,-1)" font-size="884px" font-family="serif">为</text><text data-variant="normal" transform="translate(11000,0) scale(1,-1)" font-size="884px" font-family="serif">圆</text></g><g data-mml-node="mo" transform="translate(17610.8,0)"><path data-c="2E" d="M78 60Q78 84 95 102T138 120Q162 120 180 104T199 61Q199 36 182 18T139 0T96 17T78 60Z"></path></g></g></g></svg></mjx-container></p>
+<h1 id="4-等价的问题"><a href="#4-等价的问题" class="headerlink" title="4 等价的问题"></a>4 等价的问题</h1><p>平面上，在给定周长的所有闭曲线中，圆是具有最大面积的曲线。 反过来，所有围成的区域面积一定的闭曲线中，以圆的周长为最小。</p>
+<h1 id="5-讨论"><a href="#5-讨论" class="headerlink" title="5 讨论"></a>5 讨论</h1><p>在这个 blog 中，我用一阶变分求出了极值函数（圆），又尝试使用二阶变分去看是极大值和极小值，发现圆是极大值函数。其实关于二阶变分我的了解甚少，对于为什么<br>L’(0) = 0, 其实我是有点拿不准的，我目前的理解是，由于在这个约束优化问题上，我们固定的是周长，r(ε)​ = R + ε*u, 我们只是添加了一个线性的扰动，这个扰动不能够一定严格保证周长是不变的，如果要保证周长在扰动后严格不变，就需要添加高阶的修正。因为我的约束是 所有的周长的定积分是l 的函数组成的集合，L’(ε)在ε=0 的切线方向至少是沿着约束的切线方向的，如果是沿着约束的切线方向的话，那么一阶变化就是0，正好就满足了<strong>Wirtinger 不等式</strong>，也就能够判断二阶变分的符号了。</p>
 
       </div>
 
