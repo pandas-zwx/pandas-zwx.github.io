@@ -1432,7 +1432,7 @@ pre code {
   vertical-align: middle;
 }
 .links-of-author a::before {
-  background: #f2e74f;
+  background: #ffd4ff;
   display: inline-block;
   margin-right: 3px;
   transform: translateY(-2px);
@@ -2962,4 +2962,27 @@ body {
 .posts-expand .post-body {
   margin-top: 8px !important;
   margin-bottom: 8px !important;
+}
+.tag-list-link,
+.tag-cloud a,
+.tag-cloud-tags a {
+  font-size: 22px !important;
+  line-height: 2.2 !important;
+}
+.tag-list-count {
+  font-size: 16px !important;
+  padding: 2px 6px !important;
+}
+.category-list-link {
+  font-size: 22px !important;
+  line-height: 2.2 !important;
+}
+.category-list-count {
+  font-size: 16px !important;
+  padding: 2px 6px !important;
+}
+.category-list,
+.tag-list {
+  font-size: 22px !important;
+  line-height: 2.2 !important;
 }
