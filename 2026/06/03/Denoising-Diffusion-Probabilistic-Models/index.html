@@ -20,12 +20,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"pandas-zwx.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.26.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"github","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"mac"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"utterances","active":"utterances","storage":true,"lazyload":false,"display":"post","nav":null,"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js" defer></script>
 
-    <meta name="description" content="Introduction扩散模型现在大家都耳熟能详，但是扩散模型具体是如何工作的，背后的数学原理是什么，我是不清楚的。所以在这个 blog 中，我会尽力的向大家讲清楚，扩散模型是如何工作的。简而言之，扩散模型分为两个步骤，一个步骤是加噪音（add noise），加的是高斯噪音，另一个步骤是去噪音,是使用 U-net去预测噪音，然后在 noisy image上去除掉这个噪音。 再开始阅读这个 blo">
+    <meta name="description" content="1.Introduction扩散模型现在大家都耳熟能详，但是扩散模型具体是如何工作的，背后的数学原理是什么，我是不清楚的。所以在这个 blog 中，我会尽力的向大家讲清楚，扩散模型是如何工作的。简而言之，扩散模型分为两个步骤，一个步骤是加噪音（add noise），加的是高斯噪音，另一个步骤是去噪音,是使用 U-net去预测噪音，然后在 noisy image上去除掉这个噪音。 再开始阅读这个 b">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Denoising Diffusion Probabilistic Models的数学原理和代码实现">
 <meta property="og:url" content="https://pandas-zwx.github.io/2026/06/03/Denoising-Diffusion-Probabilistic-Models/index.html">
 <meta property="og:site_name" content="Welcome to Pandas-zwx&#39;s channel">
-<meta property="og:description" content="Introduction扩散模型现在大家都耳熟能详，但是扩散模型具体是如何工作的，背后的数学原理是什么，我是不清楚的。所以在这个 blog 中，我会尽力的向大家讲清楚，扩散模型是如何工作的。简而言之，扩散模型分为两个步骤，一个步骤是加噪音（add noise），加的是高斯噪音，另一个步骤是去噪音,是使用 U-net去预测噪音，然后在 noisy image上去除掉这个噪音。 再开始阅读这个 blo">
+<meta property="og:description" content="1.Introduction扩散模型现在大家都耳熟能详，但是扩散模型具体是如何工作的，背后的数学原理是什么，我是不清楚的。所以在这个 blog 中，我会尽力的向大家讲清楚，扩散模型是如何工作的。简而言之，扩散模型分为两个步骤，一个步骤是加噪音（add noise），加的是高斯噪音，另一个步骤是去噪音,是使用 U-net去预测噪音，然后在 noisy image上去除掉这个噪音。 再开始阅读这个 b">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://pandas-zwx.github.io/2026/06/03/Denoising-Diffusion-Probabilistic-Models/B1covariant_matrix.png">
 <meta property="og:image" content="https://pandas-zwx.github.io/2026/06/03/Denoising-Diffusion-Probabilistic-Models/jensen_1.png">
@@ -35,8 +35,10 @@
 <meta property="og:image" content="https://pandas-zwx.github.io/2026/06/03/Denoising-Diffusion-Probabilistic-Models/KLmore0.png">
 <meta property="og:image" content="https://pandas-zwx.github.io/2026/06/03/Denoising-Diffusion-Probabilistic-Models/normal_KL.png">
 <meta property="og:image" content="https://pandas-zwx.github.io/2026/06/03/Denoising-Diffusion-Probabilistic-Models/KL_normal2.png">
+<meta property="og:image" content="https://pandas-zwx.github.io/2026/06/03/Denoising-Diffusion-Probabilistic-Models/forward_1.png">
+<meta property="og:image" content="https://pandas-zwx.github.io/2026/06/03/Denoising-Diffusion-Probabilistic-Models/forward_2.png">
 <meta property="article:published_time" content="2026-06-03T12:57:07.000Z">
-<meta property="article:modified_time" content="2026-06-03T14:43:45.862Z">
+<meta property="article:modified_time" content="2026-06-04T07:31:43.881Z">
 <meta property="article:author" content="Pandas-zwx">
 <meta property="article:tag" content="diffusion model">
 <meta name="twitter:card" content="summary">
@@ -251,7 +253,7 @@ mjx-container[display="true"] + br {
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Introduction"><span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Background-knowledge"><span class="nav-text">Background knowledge</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-Introduction"><span class="nav-text">1.Introduction</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-Background-knowledge"><span class="nav-text">2.Background knowledge</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-Diffusion-model"><span class="nav-text">3.Diffusion model</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#forward-process-Add-Gaussian-noise"><span class="nav-text">forward process (Add Gaussian noise)</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -330,9 +332,15 @@ mjx-container[display="true"] + br {
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">Posted on</span>
-      
 
-      <time title="Created: 2026-06-03 20:57:07 / Modified: 22:43:45" itemprop="dateCreated datePublished" datetime="2026-06-03T20:57:07+08:00">2026-06-03</time>
+      <time title="Created: 2026-06-03 20:57:07" itemprop="dateCreated datePublished" datetime="2026-06-03T20:57:07+08:00">2026-06-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2026-06-04 15:31:43" itemprop="dateModified" datetime="2026-06-04T15:31:43+08:00">2026-06-04</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -354,9 +362,9 @@ mjx-container[display="true"] + br {
     
     
       
-      <div class="post-body" itemprop="articleBody"><h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>扩散模型现在大家都耳熟能详，但是扩散模型具体是如何工作的，背后的数学原理是什么，我是不清楚的。所以在这个 blog 中，我会尽力的向大家讲清楚，扩散模型是如何工作的。简而言之，扩散模型分为两个步骤，一个步骤是加噪音（add noise），加的是高斯噪音，另一个步骤是去噪音,是使用 U-net去预测噪音，然后在 noisy image上去除掉这个噪音。</p>
+      <div class="post-body" itemprop="articleBody"><h1 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1.Introduction"></a>1.Introduction</h1><p>扩散模型现在大家都耳熟能详，但是扩散模型具体是如何工作的，背后的数学原理是什么，我是不清楚的。所以在这个 blog 中，我会尽力的向大家讲清楚，扩散模型是如何工作的。简而言之，扩散模型分为两个步骤，一个步骤是加噪音（add noise），加的是高斯噪音，另一个步骤是去噪音,是使用 U-net去预测噪音，然后在 noisy image上去除掉这个噪音。</p>
 <p>再开始阅读这个 blog 之前，我需要先证明和介绍一些需要用到的结论。</p>
-<h1 id="Background-knowledge"><a href="#Background-knowledge" class="headerlink" title="Background knowledge"></a>Background knowledge</h1><h2 id="协方差矩阵为单位矩阵的高斯分布，每一个维度是相互独立的。"><a href="#协方差矩阵为单位矩阵的高斯分布，每一个维度是相互独立的。" class="headerlink" title="协方差矩阵为单位矩阵的高斯分布，每一个维度是相互独立的。"></a>协方差矩阵为单位矩阵的高斯分布，每一个维度是相互独立的。</h2><figure>
+<h1 id="2-Background-knowledge"><a href="#2-Background-knowledge" class="headerlink" title="2.Background knowledge"></a>2.Background knowledge</h1><h2 id="协方差矩阵为单位矩阵的高斯分布，每一个维度是相互独立的。"><a href="#协方差矩阵为单位矩阵的高斯分布，每一个维度是相互独立的。" class="headerlink" title="协方差矩阵为单位矩阵的高斯分布，每一个维度是相互独立的。"></a>协方差矩阵为单位矩阵的高斯分布，每一个维度是相互独立的。</h2><figure>
   <img src="B1covariant_matrix.png" alt="B1covariant_matrix.png">
   <figcaption>图1 证明协方差矩阵为单位矩阵的高斯分布，每一个维度是相互独立的</figcaption>
 </figure>
@@ -409,6 +417,16 @@ mjx-container[display="true"] + br {
 </figure>
 
 
+
+<h1 id="3-Diffusion-model"><a href="#3-Diffusion-model" class="headerlink" title="3.Diffusion model"></a>3.Diffusion model</h1><h1 id="forward-process-Add-Gaussian-noise"><a href="#forward-process-Add-Gaussian-noise" class="headerlink" title="forward process (Add Gaussian noise)"></a>forward process (Add Gaussian noise)</h1><figure>
+  <img src="forward_1.png" alt="forward_1.png">
+  <figcaption>图9 扩散模型的 forward process 1</figcaption>
+</figure>
+
+<figure>
+  <img src="forward_2.png" alt="forward_2.png">
+  <figcaption>图10 扩散模型的 forward process 2</figcaption>
+</figure>
       </div>
 
     
