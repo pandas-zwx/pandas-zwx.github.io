@@ -37,8 +37,17 @@
 <meta property="og:image" content="https://pandas-zwx.github.io/2026/06/03/Denoising-Diffusion-Probabilistic-Models/KL_normal2.png">
 <meta property="og:image" content="https://pandas-zwx.github.io/2026/06/03/Denoising-Diffusion-Probabilistic-Models/forward_1.png">
 <meta property="og:image" content="https://pandas-zwx.github.io/2026/06/03/Denoising-Diffusion-Probabilistic-Models/forward_2.png">
+<meta property="og:image" content="https://pandas-zwx.github.io/2026/06/03/Denoising-Diffusion-Probabilistic-Models/R1.jpg">
+<meta property="og:image" content="https://pandas-zwx.github.io/2026/06/03/Denoising-Diffusion-Probabilistic-Models/R2.jpg">
+<meta property="og:image" content="https://pandas-zwx.github.io/2026/06/03/Denoising-Diffusion-Probabilistic-Models/R3.jpg">
+<meta property="og:image" content="https://pandas-zwx.github.io/2026/06/03/Denoising-Diffusion-Probabilistic-Models/R4.jpg">
+<meta property="og:image" content="https://pandas-zwx.github.io/2026/06/03/Denoising-Diffusion-Probabilistic-Models/R5.jpg">
+<meta property="og:image" content="https://pandas-zwx.github.io/2026/06/03/Denoising-Diffusion-Probabilistic-Models/R6.jpg">
+<meta property="og:image" content="https://pandas-zwx.github.io/2026/06/03/Denoising-Diffusion-Probabilistic-Models/R7.jpg">
+<meta property="og:image" content="https://pandas-zwx.github.io/2026/06/03/Denoising-Diffusion-Probabilistic-Models/R8.jpg">
+<meta property="og:image" content="https://pandas-zwx.github.io/2026/06/03/Denoising-Diffusion-Probabilistic-Models/R9.jpg">
 <meta property="article:published_time" content="2026-06-03T12:57:07.000Z">
-<meta property="article:modified_time" content="2026-06-04T07:31:43.881Z">
+<meta property="article:modified_time" content="2026-06-05T16:59:13.121Z">
 <meta property="article:author" content="Pandas-zwx">
 <meta property="article:tag" content="diffusion model">
 <meta name="twitter:card" content="summary">
@@ -253,7 +262,7 @@ mjx-container[display="true"] + br {
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-Introduction"><span class="nav-text">1.Introduction</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-Background-knowledge"><span class="nav-text">2.Background knowledge</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-Diffusion-model"><span class="nav-text">3.Diffusion model</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#forward-process-Add-Gaussian-noise"><span class="nav-text">forward process (Add Gaussian noise)</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-Introduction"><span class="nav-text">1.Introduction</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-Background-knowledge"><span class="nav-text">2.Background knowledge</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-Diffusion-model"><span class="nav-text">3.Diffusion model</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -272,7 +281,7 @@ mjx-container[display="true"] + br {
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">5</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
@@ -340,7 +349,7 @@ mjx-container[display="true"] + br {
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-06-04 15:31:43" itemprop="dateModified" datetime="2026-06-04T15:31:43+08:00">2026-06-04</time>
+      <time title="Modified: 2026-06-06 00:59:13" itemprop="dateModified" datetime="2026-06-06T00:59:13+08:00">2026-06-06</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -349,6 +358,10 @@ mjx-container[display="true"] + br {
       <span class="post-meta-item-text">In</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
           <a href="/categories/%E6%A6%82%E7%8E%87%E4%B8%8E%E7%BB%9F%E8%AE%A1/" itemprop="url" rel="index"><span itemprop="name">概率与统计</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%A6%82%E7%8E%87%E4%B8%8E%E7%BB%9F%E8%AE%A1/AI/" itemprop="url" rel="index"><span itemprop="name">AI</span></a>
         </span>
     </span>
 
@@ -418,7 +431,7 @@ mjx-container[display="true"] + br {
 
 
 
-<h1 id="3-Diffusion-model"><a href="#3-Diffusion-model" class="headerlink" title="3.Diffusion model"></a>3.Diffusion model</h1><h1 id="forward-process-Add-Gaussian-noise"><a href="#forward-process-Add-Gaussian-noise" class="headerlink" title="forward process (Add Gaussian noise)"></a>forward process (Add Gaussian noise)</h1><figure>
+<h1 id="3-Diffusion-model"><a href="#3-Diffusion-model" class="headerlink" title="3.Diffusion model"></a>3.Diffusion model</h1><h2 id="forward-process-Add-Gaussian-noise"><a href="#forward-process-Add-Gaussian-noise" class="headerlink" title="forward process (Add Gaussian noise)"></a>forward process (Add Gaussian noise)</h2><figure>
   <img src="forward_1.png" alt="forward_1.png">
   <figcaption>图9 扩散模型的 forward process 1</figcaption>
 </figure>
@@ -427,6 +440,57 @@ mjx-container[display="true"] + br {
   <img src="forward_2.png" alt="forward_2.png">
   <figcaption>图10 扩散模型的 forward process 2</figcaption>
 </figure>
+
+
+<h2 id="Reverse-process"><a href="#Reverse-process" class="headerlink" title="Reverse process"></a>Reverse process</h2><p>关于反向过程推导的思路，我借鉴了<strong>Deepia</strong>的关于 diffusion 模型的视频中的思路。</p>
+<p>推导的思路大致是从 negative log likelihood 开始，其中用到了一些 trick，包括 Jensen’s Inequality,Evidence lower bound, KL divergence, 最后用到了辛钦大数定律(n趋近于无穷大时，算数平均数依概率收敛于期望)</p>
+<p><strong>篇幅较长，其中重要的公式我会标记一下的。开始我们的推导吧！</strong></p>
+<figure>
+  <img src="R1.jpg" alt="R1.jpg">
+  <figcaption>图11 扩散模型的 Reverse process 1</figcaption>
+</figure>
+
+<figure>
+  <img src="R2.jpg" alt="R2.jpg">
+  <figcaption>图12 扩散模型的 Reverse process 2</figcaption>
+</figure>
+
+<figure>
+  <img src="R3.jpg" alt="R3.jpg">
+  <figcaption>图13 扩散模型的 Reverse process 3</figcaption>
+</figure>
+
+<figure>
+  <img src="R4.jpg" alt="R4.jpg">
+  <figcaption>图14 扩散模型的 Reverse process 4</figcaption>
+</figure>
+
+<figure>
+  <img src="R5.jpg" alt="R5.jpg">
+  <figcaption>图15 扩散模型的 Reverse process 5</figcaption>
+</figure>
+
+<figure>
+  <img src="R6.jpg" alt="R6.jpg">
+  <figcaption>图16 扩散模型的 Reverse process 6</figcaption>
+</figure>
+
+<figure>
+  <img src="R7.jpg" alt="R7.jpg">
+  <figcaption>图17 扩散模型的 Reverse process 7</figcaption>
+</figure>
+
+<figure>
+  <img src="R8.jpg" alt="R8.jpg">
+  <figcaption>图18 扩散模型的 Reverse process 8</figcaption>
+</figure>
+
+<figure>
+  <img src="R9.jpg" alt="R9.jpg">
+  <figcaption>图19 扩散模型的 Reverse process 9</figcaption>
+</figure>
+
+
       </div>
 
     
