@@ -54,7 +54,7 @@
 <meta property="og:image" content="https://pandas-zwx.github.io/2026/06/03/Denoising-Diffusion-Probabilistic-Models/sample_trajectory.png">
 <meta property="og:image" content="https://pandas-zwx.github.io/2026/06/03/Denoising-Diffusion-Probabilistic-Models/no_var_sample_trajectory.png">
 <meta property="article:published_time" content="2026-06-03T12:57:07.000Z">
-<meta property="article:modified_time" content="2026-06-11T13:43:55.512Z">
+<meta property="article:modified_time" content="2026-06-11T13:45:53.770Z">
 <meta property="article:author" content="Pandas-zwx">
 <meta property="article:tag" content="diffusion model">
 <meta name="twitter:card" content="summary">
@@ -356,7 +356,7 @@ mjx-container[display="true"] + br {
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-06-11 21:43:55" itemprop="dateModified" datetime="2026-06-11T21:43:55+08:00">2026-06-11</time>
+      <time title="Modified: 2026-06-11 21:45:53" itemprop="dateModified" datetime="2026-06-11T21:45:53+08:00">2026-06-11</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -577,8 +577,10 @@ mjx-container[display="true"] + br {
 
 
 
+
+<h2 id="做一个小小的实验"><a href="#做一个小小的实验" class="headerlink" title="做一个小小的实验"></a>做一个小小的实验</h2><p>如果在 denoise 的时候，把posterior_variance_t设置为 0，会怎么样呢？</p>
 <figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># <span class="type">posterior_variance_t</span> = <span class="type">beta_t</span> * (<span class="number">1.0</span> - <span class="type">alpha_bar_prev_t</span>) / (<span class="number">1.0</span> - <span class="type">alpha_bar_t</span>)</span><br><span class="line"><span class="type">posterior_variance_t</span> = torch.<span class="built_in">zeros_like</span>(<span class="type">beta_t</span>)</span><br><span class="line"># <span class="type">posterior_variance_t</span> = <span class="type">posterior_variance_t</span>.<span class="built_in">clamp</span>(min=<span class="number">1e-20</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>如果在 denoise 的时候，把posterior_variance_t设置为 0，会怎么样呢？</p>
+
 <p>结果如图 26，模型丧失了 the ablity of image generation</p>
 <figure>
   <img src="no_var_sample_trajectory.png" alt="no_var_sample_trajectory.png">
