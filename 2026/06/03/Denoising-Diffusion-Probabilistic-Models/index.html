@@ -35,6 +35,8 @@
 <meta property="og:image" content="https://pandas-zwx.github.io/2026/06/03/Denoising-Diffusion-Probabilistic-Models/KLmore0.png">
 <meta property="og:image" content="https://pandas-zwx.github.io/2026/06/03/Denoising-Diffusion-Probabilistic-Models/normal_KL.png">
 <meta property="og:image" content="https://pandas-zwx.github.io/2026/06/03/Denoising-Diffusion-Probabilistic-Models/KL_normal2.png">
+<meta property="og:image" content="https://pandas-zwx.github.io/2026/06/03/Denoising-Diffusion-Probabilistic-Models/U_net.png">
+<meta property="og:image" content="https://pandas-zwx.github.io/2026/06/03/Denoising-Diffusion-Probabilistic-Models/U_net.png">
 <meta property="og:image" content="https://pandas-zwx.github.io/2026/06/03/Denoising-Diffusion-Probabilistic-Models/forward_1.png">
 <meta property="og:image" content="https://pandas-zwx.github.io/2026/06/03/Denoising-Diffusion-Probabilistic-Models/forward_2.png">
 <meta property="og:image" content="https://pandas-zwx.github.io/2026/06/03/Denoising-Diffusion-Probabilistic-Models/R1.jpg">
@@ -54,7 +56,7 @@
 <meta property="og:image" content="https://pandas-zwx.github.io/2026/06/03/Denoising-Diffusion-Probabilistic-Models/sample_trajectory.png">
 <meta property="og:image" content="https://pandas-zwx.github.io/2026/06/03/Denoising-Diffusion-Probabilistic-Models/no_var_sample_trajectory.png">
 <meta property="article:published_time" content="2026-06-03T12:57:07.000Z">
-<meta property="article:modified_time" content="2026-06-11T13:45:53.770Z">
+<meta property="article:modified_time" content="2026-06-11T14:48:07.991Z">
 <meta property="article:author" content="Pandas-zwx">
 <meta property="article:tag" content="diffusion model">
 <meta name="twitter:card" content="summary">
@@ -356,7 +358,7 @@ mjx-container[display="true"] + br {
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-06-11 21:45:53" itemprop="dateModified" datetime="2026-06-11T21:45:53+08:00">2026-06-11</time>
+      <time title="Modified: 2026-06-11 22:48:07" itemprop="dateModified" datetime="2026-06-11T22:48:07+08:00">2026-06-11</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -436,8 +438,40 @@ mjx-container[display="true"] + br {
   <figcaption>图8 两个正态分布的特殊情况的KL散度</figcaption>
 </figure>
 
+<h2 id="2-5-U-Net-architecture"><a href="#2-5-U-Net-architecture" class="headerlink" title="2.5 U-Net architecture"></a>2.5 U-Net architecture</h2><figure>
+  <img src="U_net.png" alt="U_net.png">
+  <figcaption>图8.2 U-Net 架构</figcaption>
+</figure>
 
+<p>U-Net 的整体结构可以分成三部分：</p>
+<ol>
+<li>downsample，下采样部分；</li>
+<li>bottleneck，中间瓶颈层；</li>
+<li>upsample，上采样部分。</li>
+</ol>
+<h2 id="2-5-U-Net-architecture-1"><a href="#2-5-U-Net-architecture-1" class="headerlink" title="2.5 U-Net architecture"></a>2.5 U-Net architecture</h2><figure>
+  <img src="U_net.png" alt="U_net.png">
+  <figcaption>图8.2 U-Net 架构</figcaption>
+</figure>
 
+<p>U-Net 的架构主要可以分成三部分：downsample、bottleneck 和 upsample。</p>
+<p>downsample 也就是下采样。在这个阶段，图片的空间尺寸会逐渐变小，与此同时，通道数会逐渐增加。</p>
+<p>这可以理解为：图片的分辨率变低了，但是每个位置包含的信息变多了。网络不再只关注很小范围内的局部像素，而是可以看到更大范围的图像内容。越往深层走，每个特征点对应原图中的区域就越大，因此模型更容易理解整体结构。</p>
+<p>bottleneck 是 U-Net 中间最窄的部分。在这一层，图片尺寸最小，通道数最多。它可以看成是整个网络中信息最浓缩的位置。经过前面的多次下采样之后，模型已经有了比较大的感受野，所以这一层更适合提取高层语义信息和全局结构信息。</p>
+<p>upsample 也就是上采样。在这个阶段，图片的空间尺寸会逐渐恢复，与此同时，通道数会逐渐减少。</p>
+<p>对于扩散模型来说，U-Net 的输入通常是一张带噪声的图片，输出通常是对噪声的预测，或者是对去噪后图像的预测。因此，输出的大小需要和输入图片保持一致。所以网络不能只停留在 bottleneck 的低分辨率特征上，而必须通过上采样把空间尺寸恢复回来。</p>
+<p>U-Net 中还有一个非常重要的设计，叫 skip connection。<br>在上采样过程中，网络会把下采样阶段中相同分辨率的特征图传过来，和当前上采样得到的特征结合在一起。这个设计非常关键。</p>
+<p>skip connection 的第一个好处是保留细节信息。下采样虽然可以帮助模型理解整体结构，但是也会损失一些空间细节，比如边缘、纹理和局部位置关系。如果上采样时只依赖 bottleneck 中被压缩过的信息，恢复出来的结果可能会比较模糊。skip connection 可以把浅层的高分辨率细节直接传给后面的上采样层，帮助模型恢复更精细的图像结构。</p>
+<p>第二个好处是融合局部信息和全局信息。浅层特征更关注局部细节，深层特征更关注整体语义。U-Net 通过 skip connection 把这两种信息结合起来：一边知道图像整体应该长什么样，一边也保留局部细节应该怎么摆放。</p>
+<p>第三个好处是让训练更加稳定。深层网络在训练时，梯度可能会在反向传播过程中逐渐变弱。skip connection 提供了一条更短的传播路径，让前面的层更容易接收到训练信号，因此模型更容易训练。</p>
+<p>OK，那么，为什么 U-Net 要先下采样再上采样？直接用普通 CNN 预测不行吗？</p>
+<p>理论上，直接用普通 CNN 也可以。比如输入一张带噪声的图片，然后输出一张预测噪声，只要输入和输出尺寸一样，就可以训练。</p>
+<p>但是普通 CNN 有一个问题：如果一直保持原图分辨率，卷积核通常只能看到比较局部的区域。比如一个小卷积核，一开始只能关注附近很小的一块区域。虽然多叠几层之后感受野会变大，但这样计算量会增加，而且模型理解大尺度结构也会更困难。</p>
+<p>下采样的作用，就是让模型更高效地获得大范围上下文。图片尺寸变小以后，同样大小的卷积核就可以覆盖原图中更大的区域。这样模型更容易理解整张图像的布局，比如物体的大致轮廓、不同区域之间的关系，以及整体结构。</p>
+<p>但是只下采样也不行。因为扩散模型最终要输出和输入图像一样大小的结果，所以还需要上采样，把低分辨率的高级特征一步步恢复到原始分辨率。</p>
+<p>因此，U-Net 的设计可以理解为：先压缩，获得全局理解；再恢复，生成像素级输出。</p>
+<p>downsample 负责扩大感受野，让模型看得更远；bottleneck 负责理解整体结构；upsample 负责恢复图像分辨率；skip connection 负责把早期的细节信息补回来。</p>
+<p>在扩散模型中，U-Net 通常接收带噪声的图像和时间步信息，然后输出模型预测的噪声。因为输入和输出都具有图像结构，所以 U-Net 很适合作为扩散模型中的去噪网络。</p>
 <h1 id="3-Math-principle-of-diffusion-model"><a href="#3-Math-principle-of-diffusion-model" class="headerlink" title="3.Math principle of diffusion model"></a>3.Math principle of diffusion model</h1><h2 id="3-1-Forward-process-Add-Gaussian-noise"><a href="#3-1-Forward-process-Add-Gaussian-noise" class="headerlink" title="3.1 Forward process (Add Gaussian noise)"></a>3.1 Forward process (Add Gaussian noise)</h2><figure>
   <img src="forward_1.png" alt="forward_1.png">
   <figcaption>图9 扩散模型的 forward process 1</figcaption>
@@ -590,7 +624,7 @@ mjx-container[display="true"] + br {
 <p>我是用熵来理解蛮有意思的，在每一步都要使这张照片有一定的熵，熵大了系统更活跃，更能向着不同的方向发展。</p>
 <h1 id="5-Last"><a href="#5-Last" class="headerlink" title="5 Last"></a>5 Last</h1><p>Very exciting — we actually generated some images from pure noise! Even though they’re a bit ugly, stiff, and unnatural, we can see that our tiny model actually learned something, which proves our approach is on the right track. And as they say, “a sparrow may be small, but it has all the vital organs.” In this little project, I learned how to actually train a model.</p>
 <p>Honestly, before I started writing this blog, I had no idea what diffusion was or what role the math played in it. When I first looked at the DDPM paper, I felt a bit hopeless — way too many formulas, haha. But I pushed through it. Maybe I still don’t fully understand all the theory, but I did actually learn something.</p>
-<h1 id="6-Ref"><a href="#6-Ref" class="headerlink" title="6 Ref"></a>6 Ref</h1><p>[1] <a target="_blank" rel="noopener" href="https://doi.org/10.48550/arXiv.2208.11970">https://doi.org/10.48550/arXiv.2208.11970</a><br>[2] <a target="_blank" rel="noopener" href="https://doi.org/10.48550/arXiv.2006.11239">https://doi.org/10.48550/arXiv.2006.11239</a><br>[3] <a target="_blank" rel="noopener" href="https://kexue.fm/archives/8512">https://kexue.fm/archives/8512</a></p>
+<h1 id="6-Ref"><a href="#6-Ref" class="headerlink" title="6 Ref"></a>6 Ref</h1><p>[1] <a target="_blank" rel="noopener" href="https://doi.org/10.48550/arXiv.2208.11970">https://doi.org/10.48550/arXiv.2208.11970</a><br>[2] <a target="_blank" rel="noopener" href="https://doi.org/10.48550/arXiv.2006.11239">https://doi.org/10.48550/arXiv.2006.11239</a><br>[3] <a target="_blank" rel="noopener" href="https://kexue.fm/archives/8512">https://kexue.fm/archives/8512</a><br>[4] <a target="_blank" rel="noopener" href="https://doi.org/10.48550/arXiv.1505.04597">https://doi.org/10.48550/arXiv.1505.04597</a></p>
 
       </div>
 
