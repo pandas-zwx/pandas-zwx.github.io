@@ -38,7 +38,7 @@
 <meta property="og:image" content="https://pandas-zwx.github.io/images/gradient_descent/in.png">
 <meta property="og:image" content="https://pandas-zwx.github.io/2026/04/05/gradient-descent/cfDNA.png">
 <meta property="article:published_time" content="2026-04-05T10:02:27.000Z">
-<meta property="article:modified_time" content="2026-06-11T07:50:26.219Z">
+<meta property="article:modified_time" content="2026-06-11T09:10:26.362Z">
 <meta property="article:author" content="Pandas-zwx">
 <meta property="article:tag" content="梯度下降">
 <meta property="article:tag" content="机器学习">
@@ -142,7 +142,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0-%E4%BB%80%E4%B9%88%E6%98%AF%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D"><span class="nav-text">0 什么是梯度下降</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%E7%9A%84%E5%BA%94%E7%94%A8"><span class="nav-text">1 梯度下降的应用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%E7%9A%84%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0%E5%8F%8A%E5%85%B6%E5%8F%AF%E8%A7%86%E5%8C%96"><span class="nav-text">2 梯度下降的代码实现及其可视化</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%E8%BF%90%E8%A1%8C%E7%BB%93%E6%9E%9C"><span class="nav-text">3 运行结果</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0-%E4%BB%80%E4%B9%88%E6%98%AF%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D"><span class="nav-text">0 什么是梯度下降</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%E7%9A%84%E5%BA%94%E7%94%A8"><span class="nav-text">1 梯度下降的应用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%E7%9A%84%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0%E5%8F%8A%E5%85%B6%E5%8F%AF%E8%A7%86%E5%8C%96"><span class="nav-text">2 梯度下降的代码实现及其可视化</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%E8%BF%90%E8%A1%8C%E7%BB%93%E6%9E%9C"><span class="nav-text">3 运行结果</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2026-6-11-%E6%9B%B4"><span class="nav-text">2026.6.11 更</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -229,7 +229,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-06-11 15:50:26" itemprop="dateModified" datetime="2026-06-11T15:50:26+08:00">2026-06-11</time>
+      <time title="Modified: 2026-06-11 17:10:26" itemprop="dateModified" datetime="2026-06-11T17:10:26+08:00">2026-06-11</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -329,23 +329,24 @@
 <p>除此之外，在梯度下降找到最优解的时候还存在一个问题就是局部最优解，我目前能想到的解决办法是使用stochastic gradient descent(随机梯度下降)方法。随机梯度下降与batch gradient descent(批量梯度下降)相比，随机梯度下降更随机(随机选择一个样本计算梯度)，在一定程度上能够帮助逃离较差的局部最优解，避免卡在平坦区域和鞍点上。</p>
 <p>在 AI 可解释性领域(方面)会用到梯度分析法：<br>当模型训练完成(参数固定下来之后), 此时，参数不再是自变量，而输入数据变成了自变量，此时输入数据为 A, 然后得到loss, loss对输入数据A求导，得到loss关于A的梯度(这里的梯度已经不是梯度下降时指示参数更新方向的用途了,而是计算loss对A的敏感程度了,可以理解成斜率)，如果此时梯度很大，说明A很重要，A改变一点loss会改变很大。一般还会做这个操作：A * A_grad,因为如果 A 的梯度很大，但是 A 本身的值很小，那么影响说不定也可以忽略不计，所以需要与自身的值相乘来得到一个更有价值的信息。除了与自身值相乘外,还有种方法叫：积分梯度，这个涉及到了路径积分，很有意思哦。</p>
 <p>最近好久没更新，心血来潮，更新了一下，梯度下降算是机器学习/深度学习领域的基石，其核心是方向导数和链式法则。学习道路上总是充满着好奇和疑惑，想起罗素的一句话:<br>“The trouble with the world is that the stupid are cocksure and the intelligent are full of doubt.”<br>所以有疑惑的人就是聪明人，我是聪明人，如是而已，哈哈哈。</p>
-<p>2026.6.11 更</p>
-<h2 id="梯度下降里面还会涉及到-Momentum，"><a href="#梯度下降里面还会涉及到-Momentum，" class="headerlink" title="梯度下降里面还会涉及到 Momentum，"></a>梯度下降里面还会涉及到 Momentum，</h2><p>v = β * v + g<br>θ = θ - lr * v</p>
+<h1 id="2026-6-11-更"><a href="#2026-6-11-更" class="headerlink" title="2026.6.11 更"></a>2026.6.11 更</h1><h2 id="1-梯度下降里面还会涉及到-Momentum，"><a href="#1-梯度下降里面还会涉及到-Momentum，" class="headerlink" title="1.梯度下降里面还会涉及到 Momentum，"></a>1.梯度下降里面还会涉及到 Momentum，</h2><p>v = β * v + g<br>θ = θ - lr * v</p>
 <p>其中：<br>g = 当前梯度<br>v = 动量(Momentum)，也可以理解为历史梯度方向的累计<br>β = 动量系数，比如 0.9</p>
 <p>直观的理解是：SGD 像一个没有惯性的小球，每一步都听当前梯度。Momentum 像一个有惯性的小球，会沿着长期趋势继续运动。受单个 batch 的影响比较小。</p>
-<h2 id="Adam-Momentum-自适应学习率"><a href="#Adam-Momentum-自适应学习率" class="headerlink" title="Adam: Momentum + 自适应学习率"></a>Adam: Momentum + 自适应学习率</h2><p>m = 梯度的一阶动量，也就是梯度的滑动平均<br>v = 梯度平方的二阶动量，也就是梯度大小的滑动平均</p>
+<h2 id="2-Adam-Momentum-自适应学习率-Adam-Adaptive-Moment-Estimation"><a href="#2-Adam-Momentum-自适应学习率-Adam-Adaptive-Moment-Estimation" class="headerlink" title="2.Adam: Momentum + 自适应学习率  Adam(Adaptive Moment Estimation)"></a>2.Adam: Momentum + 自适应学习率  Adam(Adaptive Moment Estimation)</h2><p>m = 梯度的一阶动量，也就是梯度的滑动平均<br>v = 梯度平方的二阶动量，也就是梯度大小的滑动平均</p>
 <p>m = β1 * m + (1 - β1) * g<br>v = β2 * v + (1 - β2) * g^2<br>θ = θ - lr * m / (sqrt(v) + eps)</p>
 <p>m 负责方向<br>v 负责缩放步长</p>
 <p>直观理解：如果某个参数的梯度一直很大，就让它步子小一点。如果某个参数的梯度一直很小，就让它步子相对大一点。</p>
-<h2 id="AdamW-Adam-weight-decay"><a href="#AdamW-Adam-weight-decay" class="headerlink" title="AdamW: Adam + weight_decay"></a>AdamW: Adam + weight_decay</h2><p>θ = θ - lr * Adam_update<br>θ = θ - lr * weight_decay * θ</p>
+<h2 id="3-AdamW-Adam-weight-decay"><a href="#3-AdamW-Adam-weight-decay" class="headerlink" title="3.AdamW: Adam + weight_decay"></a>3.AdamW: Adam + weight_decay</h2><p>θ = θ - lr * Adam_update<br>θ = θ - lr * weight_decay * θ</p>
 <p>参数更新：<br>一部分来自梯度<br>一部分来自参数自身的衰减</p>
 <p>可以理解成：不要让参数变得太大</p>
-<h2 id="Grad-Scaler"><a href="#Grad-Scaler" class="headerlink" title="Grad Scaler"></a>Grad Scaler</h2><p>对于梯度，还有一系列操作呢？比如如果精度用FP16，那么在梯度很小的时候，梯度可能直接就变成 0 咯，所以将 loss * 很大的常数, 求偏导的时候，会在梯度前面也乘一个很大的常数，更新的时候再unscale计算梯度。</p>
-<h2 id="Grad-clip"><a href="#Grad-clip" class="headerlink" title="Grad clip"></a>Grad clip</h2><p>给梯度的 L2 范数 设置一个 threhold，如果梯度的 L2 范数 超过这个 threhold,对梯度向量进行缩放。</p>
+<h2 id="4-Grad-Scaler"><a href="#4-Grad-Scaler" class="headerlink" title="4.Grad Scaler"></a>4.Grad Scaler</h2><p>对于梯度，还有一系列操作呢？比如如果精度用FP16(16-bit Floating Point)，那么在梯度很小的时候，梯度可能直接就变成 0 咯，所以将 loss * 很大的常数, 求偏导的时候，会在梯度前面也乘一个很大的常数，更新的时候再unscale计算梯度。</p>
+<h2 id="5-Grad-clip"><a href="#5-Grad-clip" class="headerlink" title="5.Grad clip"></a>5.Grad clip</h2><p>给梯度的 L2 范数 设置一个 threhold，如果梯度的 L2 范数 超过这个 threhold,对梯度向量进行缩放。</p>
 <p>比如一个梯度向量: g = [3, 4, 0]<br>grad_clip = 1.0</p>
 <p>A = 1/L2_norm(g) = 0.2</p>
 <p>new_g = [0.6, 0.8]</p>
 <p>注意如果使用了 grad scaler，要先unscale,再 grad clip</p>
+<h2 id="6-Vanishing-gradient-and-Exploding-gradient"><a href="#6-Vanishing-gradient-and-Exploding-gradient" class="headerlink" title="6.Vanishing gradient and Exploding gradient"></a>6.Vanishing gradient and Exploding gradient</h2><p><strong>Vanishing gradient:</strong><br>residual connection, F(x) = f(x) + x</p>
+<p><strong>Exploding gradient:</strong><br>Initialization(like Xavier,He)<br>Normalization(Batch/Layer/Group)<br>AdamW(本身抑制大更新)<br>Gradient Clipping</p>
 
       </div>
 
