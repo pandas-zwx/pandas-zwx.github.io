@@ -54,7 +54,7 @@
 <meta property="og:image" content="https://pandas-zwx.github.io/2026/06/03/Denoising-Diffusion-Probabilistic-Models/sample_trajectory.png">
 <meta property="og:image" content="https://pandas-zwx.github.io/2026/06/03/Denoising-Diffusion-Probabilistic-Models/no_var_sample_trajectory.png">
 <meta property="article:published_time" content="2026-06-03T12:57:07.000Z">
-<meta property="article:modified_time" content="2026-06-11T13:36:12.435Z">
+<meta property="article:modified_time" content="2026-06-11T13:43:55.512Z">
 <meta property="article:author" content="Pandas-zwx">
 <meta property="article:tag" content="diffusion model">
 <meta name="twitter:card" content="summary">
@@ -356,7 +356,7 @@ mjx-container[display="true"] + br {
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-06-11 21:36:12" itemprop="dateModified" datetime="2026-06-11T21:36:12+08:00">2026-06-11</time>
+      <time title="Modified: 2026-06-11 21:43:55" itemprop="dateModified" datetime="2026-06-11T21:43:55+08:00">2026-06-11</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -508,8 +508,8 @@ mjx-container[display="true"] + br {
 </figure>
 
 <p>累死我了！！！</p>
-<p>简而言之，最终的损失函数就是，将 predicted ϵ 和 ground truth ϵ 之差的L2范数作为损失函数。</p>
-<p>我觉得一个比较有意思的点是：<br><strong>diffusion model是一个既 auto-regressive 又 non-autoregressive的 model，non-autoregressive是指它在每一步重建的时候是一次性生成的，autoregressive是指它在得到最终的 x0 的时候，是分成了 n 步完成的。</strong></p>
+<p>简而言之，最终的损失函数就是，将 predicted ϵ 和 ground truth ϵ 之差的L2范数作为损失函数。<br><strong>损失Loss越小，Ex0~qdata[p_theta(x0)]就越大</strong></p>
+<p>我觉得一个比较有意思的点是：<br><strong>diffusion model是一个既 auto-regressive 又 non-autoregressive的 model，non-autoregressive是指它在每一步重建的时候是一次性生成的，autoregressive是指它在得到最终的 x0 的时候，是分成了 n 步完成的</strong></p>
 <p>除此之外，我们可以看到，在反向去噪的过程中，<strong>x_t-1实际上是从一个高斯分布中抽样出来</strong>, 这就能够极大的丰富 diffusion model在生成图片的时候的多样性。</p>
 <p>关于第5页的③项(原文中叫 L0)，在 DDPM 中的原文中给出了精确计算的公式：</p>
 <figure>
