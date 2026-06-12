@@ -20,12 +20,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"pandas-zwx.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.26.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"github","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"mac"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"utterances","active":"utterances","storage":true,"lazyload":false,"display":"post","nav":null,"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js" defer></script>
 
-    <meta name="description" content="1.Introduction扩散模型现在大家都耳熟能详，但是扩散模型具体是如何工作的，背后的数学原理是什么，我是不清楚的。所以在这个 blog 中，我会尽力的向大家讲清楚，扩散模型是如何工作的。简而言之，扩散模型分为两个步骤，一个步骤是加噪音（add noise），加的是高斯噪音，另一个步骤是去噪音,是使用 U-net去预测噪音，然后在 noisy image上去除掉这个噪音。 再开始阅读这个 b">
+    <meta name="description" content="1.Introduction扩散模型现在大家都耳熟能详，但是扩散模型具体是如何工作的，背后的数学原理是什么，我是不清楚的。所以在这个 blog 中，我会尽力的向大家讲清楚，扩散模型是如何工作的。简而言之，扩散模型分为两个步骤，一个步骤是加噪音（add noise），加的是高斯噪音，另一个步骤是预测噪音,是使用 U-net去预测噪音。训练时，我们会随机选择一个时间步，然后把真实图片加噪到这个时间步，">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Denoising Diffusion Probabilistic Models">
 <meta property="og:url" content="https://pandas-zwx.github.io/2026/06/03/Denoising-Diffusion-Probabilistic-Models/index.html">
 <meta property="og:site_name" content="Welcome to Pandas-zwx&#39;s channel">
-<meta property="og:description" content="1.Introduction扩散模型现在大家都耳熟能详，但是扩散模型具体是如何工作的，背后的数学原理是什么，我是不清楚的。所以在这个 blog 中，我会尽力的向大家讲清楚，扩散模型是如何工作的。简而言之，扩散模型分为两个步骤，一个步骤是加噪音（add noise），加的是高斯噪音，另一个步骤是去噪音,是使用 U-net去预测噪音，然后在 noisy image上去除掉这个噪音。 再开始阅读这个 b">
+<meta property="og:description" content="1.Introduction扩散模型现在大家都耳熟能详，但是扩散模型具体是如何工作的，背后的数学原理是什么，我是不清楚的。所以在这个 blog 中，我会尽力的向大家讲清楚，扩散模型是如何工作的。简而言之，扩散模型分为两个步骤，一个步骤是加噪音（add noise），加的是高斯噪音，另一个步骤是预测噪音,是使用 U-net去预测噪音。训练时，我们会随机选择一个时间步，然后把真实图片加噪到这个时间步，">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://pandas-zwx.github.io/2026/06/03/Denoising-Diffusion-Probabilistic-Models/B1covariant_matrix.png">
 <meta property="og:image" content="https://pandas-zwx.github.io/2026/06/03/Denoising-Diffusion-Probabilistic-Models/jensen_1.png">
@@ -35,7 +35,6 @@
 <meta property="og:image" content="https://pandas-zwx.github.io/2026/06/03/Denoising-Diffusion-Probabilistic-Models/KLmore0.png">
 <meta property="og:image" content="https://pandas-zwx.github.io/2026/06/03/Denoising-Diffusion-Probabilistic-Models/normal_KL.png">
 <meta property="og:image" content="https://pandas-zwx.github.io/2026/06/03/Denoising-Diffusion-Probabilistic-Models/KL_normal2.png">
-<meta property="og:image" content="https://pandas-zwx.github.io/2026/06/03/Denoising-Diffusion-Probabilistic-Models/U_net.png">
 <meta property="og:image" content="https://pandas-zwx.github.io/2026/06/03/Denoising-Diffusion-Probabilistic-Models/U_net.png">
 <meta property="og:image" content="https://pandas-zwx.github.io/2026/06/03/Denoising-Diffusion-Probabilistic-Models/forward_1.png">
 <meta property="og:image" content="https://pandas-zwx.github.io/2026/06/03/Denoising-Diffusion-Probabilistic-Models/forward_2.png">
@@ -56,7 +55,7 @@
 <meta property="og:image" content="https://pandas-zwx.github.io/2026/06/03/Denoising-Diffusion-Probabilistic-Models/sample_trajectory.png">
 <meta property="og:image" content="https://pandas-zwx.github.io/2026/06/03/Denoising-Diffusion-Probabilistic-Models/no_var_sample_trajectory.png">
 <meta property="article:published_time" content="2026-06-03T12:57:07.000Z">
-<meta property="article:modified_time" content="2026-06-11T14:48:07.991Z">
+<meta property="article:modified_time" content="2026-06-12T02:50:49.022Z">
 <meta property="article:author" content="Pandas-zwx">
 <meta property="article:tag" content="diffusion model">
 <meta name="twitter:card" content="summary">
@@ -358,7 +357,7 @@ mjx-container[display="true"] + br {
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-06-11 22:48:07" itemprop="dateModified" datetime="2026-06-11T22:48:07+08:00">2026-06-11</time>
+      <time title="Modified: 2026-06-12 10:50:49" itemprop="dateModified" datetime="2026-06-12T10:50:49+08:00">2026-06-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -384,7 +383,7 @@ mjx-container[display="true"] + br {
     
     
       
-      <div class="post-body" itemprop="articleBody"><h1 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1.Introduction"></a>1.Introduction</h1><p>扩散模型现在大家都耳熟能详，但是扩散模型具体是如何工作的，背后的数学原理是什么，我是不清楚的。所以在这个 blog 中，我会尽力的向大家讲清楚，扩散模型是如何工作的。简而言之，扩散模型分为两个步骤，一个步骤是加噪音（add noise），加的是高斯噪音，另一个步骤是去噪音,是使用 U-net去预测噪音，然后在 noisy image上去除掉这个噪音。</p>
+      <div class="post-body" itemprop="articleBody"><h1 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1.Introduction"></a>1.Introduction</h1><p>扩散模型现在大家都耳熟能详，但是扩散模型具体是如何工作的，背后的数学原理是什么，我是不清楚的。所以在这个 blog 中，我会尽力的向大家讲清楚，扩散模型是如何工作的。简而言之，扩散模型分为两个步骤，一个步骤是加噪音（add noise），加的是高斯噪音，另一个步骤是预测噪音,是使用 U-net去预测噪音。训练时，我们会随机选择一个时间步，然后把真实图片加噪到这个时间步，得到一张 noisy image。接着，把这张 noisy image 和对应的时间步输入到 U-Net 中，让 U-Net 预测加入到图片里的噪声，把模型预测的噪声和真实加入的噪声之差的 L2范数作为损失函数。在 sample 阶段，直接从高斯噪音中取样出一张 pure image，然后在 这张 纯噪音图片 上逐步去除掉这个噪音，最后生成一张图片。</p>
 <p>再开始阅读这个 blog 之前，我需要先证明和介绍一些需要用到的结论。</p>
 <h1 id="2-Background-knowledge"><a href="#2-Background-knowledge" class="headerlink" title="2.Background knowledge"></a>2.Background knowledge</h1><h2 id="2-1-协方差矩阵为单位矩阵的高斯分布，每一个维度是相互独立的。"><a href="#2-1-协方差矩阵为单位矩阵的高斯分布，每一个维度是相互独立的。" class="headerlink" title="2.1 协方差矩阵为单位矩阵的高斯分布，每一个维度是相互独立的。"></a>2.1 协方差矩阵为单位矩阵的高斯分布，每一个维度是相互独立的。</h2><figure>
   <img src="B1covariant_matrix.png" alt="B1covariant_matrix.png">
@@ -449,12 +448,6 @@ mjx-container[display="true"] + br {
 <li>bottleneck，中间瓶颈层；</li>
 <li>upsample，上采样部分。</li>
 </ol>
-<h2 id="2-5-U-Net-architecture-1"><a href="#2-5-U-Net-architecture-1" class="headerlink" title="2.5 U-Net architecture"></a>2.5 U-Net architecture</h2><figure>
-  <img src="U_net.png" alt="U_net.png">
-  <figcaption>图8.2 U-Net 架构</figcaption>
-</figure>
-
-<p>U-Net 的架构主要可以分成三部分：downsample、bottleneck 和 upsample。</p>
 <p>downsample 也就是下采样。在这个阶段，图片的空间尺寸会逐渐变小，与此同时，通道数会逐渐增加。</p>
 <p>这可以理解为：图片的分辨率变低了，但是每个位置包含的信息变多了。网络不再只关注很小范围内的局部像素，而是可以看到更大范围的图像内容。越往深层走，每个特征点对应原图中的区域就越大，因此模型更容易理解整体结构。</p>
 <p>bottleneck 是 U-Net 中间最窄的部分。在这一层，图片尺寸最小，通道数最多。它可以看成是整个网络中信息最浓缩的位置。经过前面的多次下采样之后，模型已经有了比较大的感受野，所以这一层更适合提取高层语义信息和全局结构信息。</p>
