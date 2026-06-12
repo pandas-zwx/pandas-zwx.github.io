@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 5.4.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"pandas-zwx.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.26.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"github","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"mac"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"utterances","active":"utterances","storage":true,"lazyload":false,"display":"post","nav":null,"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="这部分的内容是在 2025年 10 月发布在简书上的，现在搬运到我的 blog 上面。 参数量模型参数量: 39,876,655。 代码##1 config.py 123456789101112131415161718192021222324import torch# 超参数INPUT_DIM &#x3D; NoneOUTPUT_DIM &#x3D; NoneD_MODEL &#x3D; 512NHEAD &#x3D; 8NUM_ENC">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Transformer">
+<meta property="og:url" content="https://pandas-zwx.github.io/2026/06/12/transformer/index.html">
+<meta property="og:site_name" content="Welcome to Pandas-zwx&#39;s channel">
+<meta property="og:description" content="这部分的内容是在 2025年 10 月发布在简书上的，现在搬运到我的 blog 上面。 参数量模型参数量: 39,876,655。 代码##1 config.py 123456789101112131415161718192021222324import torch# 超参数INPUT_DIM &#x3D; NoneOUTPUT_DIM &#x3D; NoneD_MODEL &#x3D; 512NHEAD &#x3D; 8NUM_ENC">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://pandas-zwx.github.io/2026/06/12/transformer/loss.png">
+<meta property="article:published_time" content="2026-06-12T07:53:29.000Z">
+<meta property="article:modified_time" content="2026-06-12T09:01:38.638Z">
+<meta property="article:author" content="Pandas-zwx">
+<meta property="article:tag" content="Transformer">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://pandas-zwx.github.io/2026/06/12/transformer/loss.png">
+
+
+<link rel="canonical" href="https://pandas-zwx.github.io/2026/06/12/transformer/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://pandas-zwx.github.io/2026/06/12/transformer/","path":"2026/06/12/transformer/","title":"Transformer"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Transformer | Welcome to Pandas-zwx's channel</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Welcome to Pandas-zwx's channel</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Chatty Animal Lover 🐾</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E6%95%B0%E9%87%8F"><span class="nav-text">参数量</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81"><span class="nav-text">代码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AE%AD%E7%BB%83%E8%BF%87%E7%A8%8B"><span class="nav-text">训练过程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8E%A8%E7%90%86"><span class="nav-text">推理</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Pandas-zwx</p>
+  <div class="site-description" itemprop="description">Undergraduate at Yunnan University, Master student at Fudan University Institutes of Biomedical Sciences. Love chatting, cats, dogs, and bragging.</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://pandas-zwx.github.io/2026/06/12/transformer/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Pandas-zwx">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Welcome to Pandas-zwx's channel">
+      <meta itemprop="description" content="Undergraduate at Yunnan University, Master student at Fudan University Institutes of Biomedical Sciences. Love chatting, cats, dogs, and bragging.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Transformer | Welcome to Pandas-zwx's channel">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Transformer
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2026-06-12 15:53:29 / Modified: 17:01:38" itemprop="dateCreated datePublished" datetime="2026-06-12T15:53:29+08:00">2026-06-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%90%AC%E8%BF%90%E8%87%AA%E6%88%91%E7%9A%84%E7%AE%80%E4%B9%A6/" itemprop="url" rel="index"><span itemprop="name">机器学习(搬运自我的简书)</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+      
+      <div class="post-body" itemprop="articleBody"><p>这部分的内容是在 2025年 10 月发布在简书上的，现在搬运到我的 blog 上面。</p>
+<h1 id="参数量"><a href="#参数量" class="headerlink" title="参数量"></a>参数量</h1><p>模型参数量: 39,876,655。</p>
+<h1 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h1><p>##1 config.py</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">import torch</span><br><span class="line"></span><br><span class="line"><span class="comment"># 超参数</span></span><br><span class="line">INPUT_DIM = None</span><br><span class="line">OUTPUT_DIM = None</span><br><span class="line">D_MODEL = 512</span><br><span class="line">NHEAD = 8</span><br><span class="line">NUM_ENCODER_LAYERS = 4</span><br><span class="line">NUM_DECODER_LAYERS = 4 </span><br><span class="line">DIM_FEEDFORWARD = 2048</span><br><span class="line">DROPOUT = 0.1</span><br><span class="line">BATCH_SIZE = 128</span><br><span class="line">N_EPOCHS = 100</span><br><span class="line">CLIP = 1</span><br><span class="line">LEARNING_RATE = 0.0005</span><br><span class="line">MAX_SEQ_LENGTH = 100</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设备配置</span></span><br><span class="line">device = torch.device('cuda' if torch.cuda.is_available() <span class="keyword">else</span> 'cpu')</span><br><span class="line"></span><br><span class="line"><span class="comment"># 模型保存路径</span></span><br><span class="line">MODEL_SAVE_PATH = 'transformer-model.pt'</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<p>##2 utils.py</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line">import spacy</span><br><span class="line">import torch</span><br><span class="line"><span class="selector-tag">from</span> torch<span class="selector-class">.nn</span><span class="selector-class">.utils</span><span class="selector-class">.rnn</span> import pad_sequence</span><br><span class="line"><span class="selector-tag">from</span> torchtext<span class="selector-class">.vocab</span> import Vocab</span><br><span class="line"><span class="selector-tag">from</span> collections import Counter</span><br><span class="line">import torchtext</span><br><span class="line"></span><br><span class="line"># 初始化spacy</span><br><span class="line">try:</span><br><span class="line">    spacy_en = spacy.<span class="built_in">load</span>(<span class="string">'en_core_web_sm'</span>)</span><br><span class="line">    spacy_de = spacy.<span class="built_in">load</span>(<span class="string">'de_core_news_sm'</span>)</span><br><span class="line">except OSError:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">"请先安装spacy语言模型:"</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">"python -m spacy download en_core_web_sm"</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">"python -m spacy download de_core_news_sm"</span>)</span><br><span class="line">    <span class="built_in">exit</span>()</span><br><span class="line"></span><br><span class="line">def <span class="built_in">tokenize_en</span>(text):</span><br><span class="line">    return [token.text for token in spacy_en.<span class="built_in">tokenizer</span>(text)]</span><br><span class="line"></span><br><span class="line">def <span class="built_in">tokenize_de</span>(text):</span><br><span class="line">    return [token.text for token in spacy_de.<span class="built_in">tokenizer</span>(text)]</span><br><span class="line"></span><br><span class="line">def <span class="built_in">yield_tokens</span>(data_iter, tokenizer, lang):</span><br><span class="line">    for example in data_iter:</span><br><span class="line">        yield <span class="built_in">tokenizer</span>(example[lang])</span><br><span class="line"></span><br><span class="line">def <span class="built_in">build_vocab_compatible</span>(data_iter, tokenizer, lang, min_freq=<span class="number">2</span>):</span><br><span class="line">    counter = <span class="built_in">Counter</span>()</span><br><span class="line">    for token in <span class="built_in">yield_tokens</span>(data_iter, tokenizer, lang):</span><br><span class="line">        counter.<span class="built_in">update</span>(token)</span><br><span class="line">    </span><br><span class="line">    if <span class="built_in">hasattr</span>(torchtext.vocab, <span class="string">'build_vocab_from_iterator'</span>):</span><br><span class="line">        vocab = <span class="built_in">Vocab</span>(counter,</span><br><span class="line">                     min_freq=min_freq,</span><br><span class="line">                     specials=[<span class="string">'&lt;unk&gt;'</span>, <span class="string">'&lt;pad&gt;'</span>, <span class="string">'&lt;sos&gt;'</span>, <span class="string">'&lt;eos&gt;'</span>])</span><br><span class="line">    else:</span><br><span class="line">        vocab = <span class="built_in">Vocab</span>(counter,</span><br><span class="line">                     min_freq=min_freq,</span><br><span class="line">                     specials=[<span class="string">'&lt;unk&gt;'</span>, <span class="string">'&lt;pad&gt;'</span>, <span class="string">'&lt;sos&gt;'</span>, <span class="string">'&lt;eos&gt;'</span>])</span><br><span class="line">        vocab.<span class="built_in">set_default_index</span>(vocab[<span class="string">'&lt;unk&gt;'</span>])</span><br><span class="line">    </span><br><span class="line">    return vocab</span><br><span class="line"></span><br><span class="line">def <span class="built_in">collate_fn</span>(batch, src_vocab, trg_vocab):</span><br><span class="line">    src_batch, trg_batch = [], []</span><br><span class="line">    for example in batch:</span><br><span class="line">        src = torch.<span class="built_in">tensor</span>([src_vocab[token] for token in [<span class="string">'&lt;sos&gt;'</span>] + <span class="built_in">tokenize_de</span>(example[<span class="string">'de'</span>]) + [<span class="string">'&lt;eos&gt;'</span>]])</span><br><span class="line">        trg = torch.<span class="built_in">tensor</span>([trg_vocab[token] for token in [<span class="string">'&lt;sos&gt;'</span>] + <span class="built_in">tokenize_en</span>(example[<span class="string">'en'</span>]) + [<span class="string">'&lt;eos&gt;'</span>]])</span><br><span class="line">        src_batch.<span class="built_in">append</span>(src)</span><br><span class="line">        trg_batch.<span class="built_in">append</span>(trg)</span><br><span class="line"></span><br><span class="line">    src_batch = <span class="built_in">pad_sequence</span>(src_batch, padding_value=src_vocab[<span class="string">'&lt;pad&gt;'</span>])</span><br><span class="line">    trg_batch = <span class="built_in">pad_sequence</span>(trg_batch, padding_value=trg_vocab[<span class="string">'&lt;pad&gt;'</span>])</span><br><span class="line">    return src_batch, trg_batch</span><br></pre></td></tr></table></figure>
+
+
+<p>##3 model.py</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">import</span> torch.nn <span class="keyword">as</span> nn</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> config <span class="keyword">import</span> device, D_MODEL, DROPOUT, MAX_SEQ_LENGTH</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">PositionalEncoding</span>(nn.Module):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, d_model, dropout=<span class="number">0.1</span>, max_len=<span class="number">5000</span></span>):</span><br><span class="line">        <span class="built_in">super</span>(PositionalEncoding, <span class="variable language_">self</span>).__init__()</span><br><span class="line">        <span class="variable language_">self</span>.dropout = nn.Dropout(p=dropout)</span><br><span class="line"></span><br><span class="line">        position = torch.arange(max_len).unsqueeze(<span class="number">1</span>)</span><br><span class="line">        div_term = torch.exp(torch.arange(<span class="number">0</span>, d_model, <span class="number">2</span>) * -(np.log(<span class="number">10000.0</span>) / d_model))</span><br><span class="line">        pe = torch.zeros(max_len, <span class="number">1</span>, d_model)</span><br><span class="line">        pe[:, <span class="number">0</span>, <span class="number">0</span>::<span class="number">2</span>] = torch.sin(position * div_term)</span><br><span class="line">        pe[:, <span class="number">0</span>, <span class="number">1</span>::<span class="number">2</span>] = torch.cos(position * div_term)</span><br><span class="line">        <span class="variable language_">self</span>.register_buffer(<span class="string">'pe'</span>, pe)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, x</span>):</span><br><span class="line">        x = x + <span class="variable language_">self</span>.pe[:x.size(<span class="number">0</span>), :]</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.dropout(x)</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Transformer</span>(nn.Module):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, src_vocab_size, trg_vocab_size, d_model=<span class="number">512</span>, nhead=<span class="number">8</span>, </span></span><br><span class="line"><span class="params">                num_encoder_layers=<span class="number">4</span>, num_decoder_layers=<span class="number">4</span>, dim_feedforward=<span class="number">2048</span>, </span></span><br><span class="line"><span class="params">                dropout=<span class="number">0.1</span>, max_seq_length=<span class="number">100</span></span>):</span><br><span class="line">        <span class="built_in">super</span>(Transformer, <span class="variable language_">self</span>).__init__()</span><br><span class="line">        <span class="variable language_">self</span>.d_model = d_model</span><br><span class="line">        <span class="variable language_">self</span>.embed_src = nn.Embedding(src_vocab_size, d_model)</span><br><span class="line">        <span class="variable language_">self</span>.embed_trg = nn.Embedding(trg_vocab_size, d_model)</span><br><span class="line">        <span class="variable language_">self</span>.pos_encoder = PositionalEncoding(d_model, dropout, max_seq_length)</span><br><span class="line">        <span class="variable language_">self</span>.pos_decoder = PositionalEncoding(d_model, dropout, max_seq_length)</span><br><span class="line"></span><br><span class="line">        <span class="variable language_">self</span>.transformer = nn.Transformer(</span><br><span class="line">            d_model = d_model,</span><br><span class="line">            nhead = nhead,</span><br><span class="line">            num_encoder_layers = num_encoder_layers,</span><br><span class="line">            num_decoder_layers = num_decoder_layers,</span><br><span class="line">            dim_feedforward = dim_feedforward,</span><br><span class="line">            dropout = dropout,</span><br><span class="line">            batch_first = <span class="literal">False</span></span><br><span class="line">        )</span><br><span class="line">        <span class="variable language_">self</span>.fc_out = nn.Linear(d_model, trg_vocab_size)</span><br><span class="line">        <span class="variable language_">self</span>.src_mask = <span class="literal">None</span></span><br><span class="line">        <span class="variable language_">self</span>.trg_mask = <span class="literal">None</span></span><br><span class="line">        <span class="variable language_">self</span>.memory_mask = <span class="literal">None</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">generate_square_subsequent_mask</span>(<span class="params">self, sz</span>):</span><br><span class="line">        mask = (torch.triu(torch.ones(sz, sz)) == <span class="number">1</span>).transpose(<span class="number">0</span>, <span class="number">1</span>)</span><br><span class="line">        mask = mask.<span class="built_in">float</span>().masked_fill(mask == <span class="number">0</span>, <span class="built_in">float</span>(<span class="string">'-inf'</span>)).masked_fill(mask == <span class="number">1</span>, <span class="built_in">float</span>(<span class="number">0.0</span>))</span><br><span class="line">        <span class="keyword">return</span> mask</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">max_len_mask</span>(<span class="params">self, inp</span>):</span><br><span class="line">        <span class="keyword">return</span> (inp == <span class="number">0</span>).transpose(<span class="number">0</span>, <span class="number">1</span>).to(torch.<span class="built_in">bool</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, src, trg</span>):</span><br><span class="line">        <span class="keyword">if</span> <span class="variable language_">self</span>.trg_mask <span class="keyword">is</span> <span class="literal">None</span> <span class="keyword">or</span> <span class="variable language_">self</span>.trg_mask.size(<span class="number">0</span>) != <span class="built_in">len</span>(trg):</span><br><span class="line">            <span class="variable language_">self</span>.trg_mask = <span class="variable language_">self</span>.generate_square_subsequent_mask(<span class="built_in">len</span>(trg)).to(trg.device).to(torch.<span class="built_in">bool</span>)</span><br><span class="line"></span><br><span class="line">        src_pad_mask = <span class="variable language_">self</span>.max_len_mask(src)</span><br><span class="line">        trg_pad_mask = <span class="variable language_">self</span>.max_len_mask(trg)</span><br><span class="line"></span><br><span class="line">        src = <span class="variable language_">self</span>.embed_src(src) * np.sqrt(<span class="variable language_">self</span>.d_model)</span><br><span class="line">        trg = <span class="variable language_">self</span>.embed_trg(trg) * np.sqrt(<span class="variable language_">self</span>.d_model)</span><br><span class="line"></span><br><span class="line">        src = <span class="variable language_">self</span>.pos_encoder(src)</span><br><span class="line">        trg = <span class="variable language_">self</span>.pos_decoder(trg)</span><br><span class="line"></span><br><span class="line">        output = <span class="variable language_">self</span>.transformer(src, </span><br><span class="line">                                trg,</span><br><span class="line">                                src_mask=<span class="literal">None</span>,</span><br><span class="line">                                tgt_mask=<span class="variable language_">self</span>.trg_mask,</span><br><span class="line">                                memory_mask=<span class="literal">None</span>,</span><br><span class="line">                                src_key_padding_mask=src_pad_mask,</span><br><span class="line">                                tgt_key_padding_mask=trg_pad_mask,</span><br><span class="line">                                memory_key_padding_mask=src_pad_mask)</span><br><span class="line">        output = <span class="variable language_">self</span>.fc_out(output)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> output</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">count_parameters</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">sum</span>(p.numel() <span class="keyword">for</span> p <span class="keyword">in</span> <span class="variable language_">self</span>.parameters() <span class="keyword">if</span> p.requires_grad)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<p>##4 train.py</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br></pre></td><td class="code"><pre><span class="line">import torch</span><br><span class="line">import torch.optim as optim</span><br><span class="line">import torch.nn as nn</span><br><span class="line"><span class="keyword">from</span> torch.utils.data import DataLoader</span><br><span class="line"><span class="keyword">from</span> tqdm import tqdm</span><br><span class="line"><span class="keyword">from</span> datasets import load_from_disk</span><br><span class="line"><span class="keyword">from</span> model import Transformer</span><br><span class="line"><span class="keyword">from</span> utils import build_vocab_compatible, tokenize_de, tokenize_en, collate_fn</span><br><span class="line"><span class="keyword">from</span><span class="built_in"> config </span>import *</span><br><span class="line">import random</span><br><span class="line">import matplotlib.pyplot as plt</span><br><span class="line"></span><br><span class="line"><span class="comment"># 加载数据</span></span><br><span class="line">ds = load_from_disk(<span class="string">"multi30k_local"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 构建词汇表</span></span><br><span class="line">src_vocab = build_vocab_compatible(ds[<span class="string">'train'</span>], tokenize_de, <span class="string">'de'</span>, <span class="attribute">min_freq</span>=2)</span><br><span class="line">trg_vocab = build_vocab_compatible(ds[<span class="string">'train'</span>], tokenize_en, <span class="string">'en'</span>, <span class="attribute">min_freq</span>=2)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 初始化全局配置</span></span><br><span class="line">INPUT_DIM = len(src_vocab)</span><br><span class="line">OUTPUT_DIM = len(trg_vocab)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 数据加载器</span></span><br><span class="line">train_loader = DataLoader(ds[<span class="string">'train'</span>], <span class="attribute">batch_size</span>=BATCH_SIZE, <span class="attribute">shuffle</span>=<span class="literal">True</span>, </span><br><span class="line">                         <span class="attribute">collate_fn</span>=lambda x: collate_fn(x, src_vocab, trg_vocab))</span><br><span class="line">valid_loader = DataLoader(ds[<span class="string">'validation'</span>], <span class="attribute">batch_size</span>=BATCH_SIZE, </span><br><span class="line">                         <span class="attribute">collate_fn</span>=lambda x: collate_fn(x, src_vocab, trg_vocab))</span><br><span class="line">test_loader = DataLoader(ds[<span class="string">'test'</span>], <span class="attribute">batch_size</span>=BATCH_SIZE, </span><br><span class="line">                        <span class="attribute">collate_fn</span>=lambda x: collate_fn(x, src_vocab, trg_vocab))</span><br><span class="line"></span><br><span class="line">def train(model, iterator, optimizer, criterion, clip):</span><br><span class="line">    model.train()</span><br><span class="line">    epoch_loss = 0</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> src, trg <span class="keyword">in</span> tqdm(iterator, <span class="attribute">desc</span>=<span class="string">'Training'</span>):</span><br><span class="line">        src, trg = src.<span class="keyword">to</span>(device), trg.<span class="keyword">to</span>(device)</span><br><span class="line">        optimizer.zero_grad()</span><br><span class="line">        </span><br><span class="line">        output = model(src, trg[:-1])</span><br><span class="line">        output = output.view(-1, output.shape[-1])</span><br><span class="line">        trg = trg[1:].view(-1)</span><br><span class="line">        </span><br><span class="line">        loss = criterion(output, trg)</span><br><span class="line">        loss.backward()</span><br><span class="line">        torch.nn.utils.clip_grad_norm_(model.parameters(), clip)</span><br><span class="line">        optimizer.<span class="keyword">step</span>()</span><br><span class="line">        epoch_loss += loss.item()</span><br><span class="line">    </span><br><span class="line">    return epoch_loss / len(iterator)</span><br><span class="line"></span><br><span class="line">def evaluate(model, iterator, criterion):</span><br><span class="line">    model.eval()</span><br><span class="line">    epoch_loss = 0</span><br><span class="line">    </span><br><span class="line">    with torch.no_grad():</span><br><span class="line">        <span class="keyword">for</span> src, trg <span class="keyword">in</span> tqdm(iterator, <span class="attribute">desc</span>=<span class="string">'Evaluating'</span>):</span><br><span class="line">            src, trg = src.<span class="keyword">to</span>(device), trg.<span class="keyword">to</span>(device)</span><br><span class="line">            output = model(src, trg[:-1])</span><br><span class="line">            </span><br><span class="line">            output = output.view(-1, output.shape[-1])</span><br><span class="line">            trg = trg[1:].view(-1)</span><br><span class="line">            </span><br><span class="line">            loss = criterion(output, trg)</span><br><span class="line">            epoch_loss += loss.item()</span><br><span class="line">    </span><br><span class="line">    return epoch_loss / len(iterator)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def draw_plot(train_losses, val_losses):</span><br><span class="line">    plt.figure(figsize=(10, 5))</span><br><span class="line">    plt.plot(train_losses, <span class="attribute">label</span>=<span class="string">'Train Loss'</span>, <span class="attribute">color</span>=<span class="string">'r'</span>)</span><br><span class="line">    plt.plot(val_losses, <span class="attribute">label</span>=<span class="string">'Validation Loss'</span>, <span class="attribute">color</span>=<span class="string">'b'</span>)</span><br><span class="line">    plt.xlabel(<span class="string">'Epochs'</span>)</span><br><span class="line">    plt.ylabel(<span class="string">'Loss'</span>)</span><br><span class="line">    plt.title(<span class="string">'Training and Validation Loss'</span>)</span><br><span class="line">    plt.legend()</span><br><span class="line">    plt.grid(<span class="literal">True</span>)</span><br><span class="line">    plt.savefig(<span class="string">'loss_curve.png'</span>)  </span><br><span class="line">    <span class="built_in">print</span>(<span class="string">"Loss curve saved to loss_curve.png"</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    random.seed(42)</span><br><span class="line">    torch.manual_seed(42)</span><br><span class="line">    torch.backends.cudnn.deterministic = <span class="literal">True</span></span><br><span class="line">    # 初始化模型</span><br><span class="line">    model = Transformer(</span><br><span class="line">        INPUT_DIM, OUTPUT_DIM, D_MODEL, NHEAD, </span><br><span class="line">        NUM_ENCODER_LAYERS, NUM_DECODER_LAYERS, </span><br><span class="line">        DIM_FEEDFORWARD, DROPOUT, MAX_SEQ_LENGTH</span><br><span class="line">    ).<span class="keyword">to</span>(device)</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">print</span>(f<span class="string">"模型参数量: {model.count_parameters():,}"</span>)</span><br><span class="line"></span><br><span class="line">    optimizer = optim.Adam(model.parameters(), <span class="attribute">lr</span>=LEARNING_RATE)</span><br><span class="line">    criterion = nn.CrossEntropyLoss(<span class="attribute">ignore_index</span>=trg_vocab[<span class="string">'&lt;pad&gt;'</span>])</span><br><span class="line"></span><br><span class="line">    best_valid_loss = float(<span class="string">'inf'</span>)</span><br><span class="line"></span><br><span class="line">    train_losses = []</span><br><span class="line">    val_losses = []</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> epoch <span class="keyword">in</span> range(N_EPOCHS):</span><br><span class="line">        train_loss = train(model, train_loader, optimizer, criterion, CLIP)</span><br><span class="line">        train_losses.append(train_loss)</span><br><span class="line">        </span><br><span class="line">        valid_loss = evaluate(model, valid_loader, criterion)</span><br><span class="line">        val_losses.append(valid_loss)</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> valid_loss &lt; best_valid_loss:</span><br><span class="line">            best_valid_loss = valid_loss</span><br><span class="line">            torch.save(model.state_dict(), MODEL_SAVE_PATH)</span><br><span class="line">        </span><br><span class="line">        <span class="built_in">print</span>(f<span class="string">'Epoch: {epoch+1:02}'</span>)</span><br><span class="line">        <span class="built_in">print</span>(f<span class="string">'\tTrain Loss: {train_loss:.3f}'</span>)</span><br><span class="line">        <span class="built_in">print</span>(f<span class="string">'\t Val. Loss: {valid_loss:.3f}'</span>)</span><br><span class="line">        </span><br><span class="line">    </span><br><span class="line">    draw_plot(train_losses, val_losses)</span><br><span class="line">    model.load_state_dict(torch.load(MODEL_SAVE_PATH))</span><br><span class="line">    test_loss = evaluate(model, test_loader, criterion)</span><br><span class="line">    <span class="built_in">print</span>(f<span class="string">'Test Loss: {test_loss:.3f}'</span>)</span><br></pre></td></tr></table></figure>
+
+
+<p>##5 translate.py</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> model <span class="keyword">import</span> Transformer</span><br><span class="line"><span class="keyword">from</span> utils <span class="keyword">import</span> tokenize_de</span><br><span class="line"><span class="keyword">from</span> config <span class="keyword">import</span> device, MODEL_SAVE_PATH</span><br><span class="line"><span class="keyword">from</span> datasets <span class="keyword">import</span> load_from_disk</span><br><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">from</span> config <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> utils <span class="keyword">import</span> build_vocab_compatible, tokenize_de, tokenize_en, collate_fn</span><br><span class="line"></span><br><span class="line"><span class="comment"># 加载数据和词汇表</span></span><br><span class="line">ds = load_from_disk(<span class="string">"multi30k_local"</span>)</span><br><span class="line">src_vocab = build_vocab_compatible(ds[<span class="string">'train'</span>], tokenize_de, <span class="string">'de'</span>, min_freq=<span class="number">2</span>)</span><br><span class="line">trg_vocab = build_vocab_compatible(ds[<span class="string">'train'</span>], tokenize_en, <span class="string">'en'</span>, min_freq=<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 加载模型</span></span><br><span class="line">model = Transformer(</span><br><span class="line">    <span class="built_in">len</span>(src_vocab), <span class="built_in">len</span>(trg_vocab), D_MODEL, NHEAD, </span><br><span class="line">    NUM_ENCODER_LAYERS, NUM_DECODER_LAYERS, </span><br><span class="line">    DIM_FEEDFORWARD, DROPOUT, MAX_SEQ_LENGTH</span><br><span class="line">).to(device)</span><br><span class="line">model.load_state_dict(torch.load(MODEL_SAVE_PATH, map_location=device))</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">translate_sentence</span>(<span class="params">sentence, max_len=<span class="number">50</span></span>):</span><br><span class="line">    model.<span class="built_in">eval</span>()</span><br><span class="line">    tokens = [<span class="string">'&lt;sos&gt;'</span>] + tokenize_de(sentence) + [<span class="string">'&lt;eos&gt;'</span>]</span><br><span class="line">    src_indexes = [src_vocab[token] <span class="keyword">for</span> token <span class="keyword">in</span> tokens]</span><br><span class="line">    src_tensor = torch.LongTensor(src_indexes).unsqueeze(<span class="number">1</span>).to(device)</span><br><span class="line">    </span><br><span class="line">    trg_indexes = [trg_vocab[<span class="string">'&lt;sos&gt;'</span>]]</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(max_len):</span><br><span class="line">        trg_tensor = torch.LongTensor(trg_indexes).unsqueeze(<span class="number">1</span>).to(device)</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">with</span> torch.no_grad():</span><br><span class="line">            output = model(src_tensor, trg_tensor)</span><br><span class="line">        </span><br><span class="line">        pred_token = output.argmax(<span class="number">2</span>)[-<span class="number">1</span>, :].item()</span><br><span class="line">        trg_indexes.append(pred_token)</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> pred_token == trg_vocab[<span class="string">'&lt;eos&gt;'</span>]:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">    </span><br><span class="line">    trg_tokens = [trg_vocab.itos[i] <span class="keyword">for</span> i <span class="keyword">in</span> trg_indexes[<span class="number">1</span>:-<span class="number">1</span>]]</span><br><span class="line">    <span class="keyword">return</span> <span class="string">' '</span>.join(trg_tokens)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    examples = [</span><br><span class="line">        <span class="string">"Ein Mann läuft auf der Straße."</span>,</span><br><span class="line">        <span class="string">"Eine Frau liest ein Buch."</span>,</span><br><span class="line">        <span class="string">"Kinder spielen im Park."</span>,</span><br><span class="line">        <span class="string">"Ein Mann läuft auf der Straße und ein Hund folgt ihm."</span>,</span><br><span class="line">        <span class="string">"Ein kleines Mädchen malt ein Bild."</span>,</span><br><span class="line">        <span class="string">"Der Himmel ist blau und die Sonne scheint."</span>,</span><br><span class="line">        <span class="string">"Eine schwarze Frau und ein weißer Mann arbeiten in einer Fabrikumgebung und packen Gläser mit Kerzen in Kartons."</span>,</span><br><span class="line">        <span class="string">"Zwei Kinder spielen mit einem Ball im Garten."</span>,</span><br><span class="line">        <span class="string">"Das Wetter ist heute sehr schön und die Vögel singen."</span>,</span><br><span class="line">        <span class="string">"Ein älterer Herr sitzt auf einer Bank und füttert die Tauben."</span>,</span><br><span class="line">        <span class="string">"Die Katze liegt auf dem Sofa und schläft."</span>,</span><br><span class="line">        <span class="string">"Ein Junge fährt mit seinem Fahrrad durch die Stadt."</span>,</span><br><span class="line">        <span class="string">"Eine Gruppe von Menschen tanzt auf einer Party."</span>,</span><br><span class="line">        <span class="string">"Der Lehrer erklärt den Schülern die Mathematikaufgaben."</span>,</span><br><span class="line">        <span class="string">"Das Kind baut eine Sandburg am Strand."</span>,</span><br><span class="line">        <span class="string">"Eine Frau kocht in der Küche und bereitet das Abendessen zu."</span>,</span><br><span class="line">        <span class="string">"Der Hund bellt laut, als der Postbote ankommt."</span>,</span><br><span class="line">        <span class="string">"Ein Paar spaziert Hand in Hand im Park."</span>,</span><br><span class="line">        <span class="string">"Die Kinder lachen und spielen im Schnee."</span>,</span><br><span class="line">        <span class="string">"Ein Musiker spielt Gitarre auf der Straße."</span></span><br><span class="line">    ]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> ex <span class="keyword">in</span> examples:</span><br><span class="line">        translation = translate_sentence(ex)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f"德文: <span class="subst">{ex}</span>"</span>)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f"英文: <span class="subst">{translation}</span>\n"</span>)</span><br></pre></td></tr></table></figure>
+
+
+<h1 id="训练过程"><a href="#训练过程" class="headerlink" title="训练过程"></a>训练过程</h1><figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">python</span> train.<span class="keyword">py</span></span><br></pre></td></tr></table></figure>
+
+<figure>
+  <img src="loss.png" alt="loss.png">
+  <figcaption>图1 loss.png</figcaption>
+</figure>
+
+<p>可以看到随着epoch的增多，训练的损失不断下降，val的损失刚开始下降，然后随着epoch的增多，validation loss也开始增加，说明过拟合了，不过我们取最低的val_loss的模型为best model。</p>
+<h1 id="推理"><a href="#推理" class="headerlink" title="推理"></a>推理</h1><figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">python</span> translate.<span class="keyword">py</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line">德文: <span class="keyword">Ein </span>Mann läuft auf der Straße.</span><br><span class="line">英文: A man walking on the street .</span><br><span class="line"></span><br><span class="line">德文: <span class="keyword">Eine </span>Frau liest <span class="keyword">ein </span><span class="keyword">Buch.</span></span><br><span class="line"><span class="keyword"></span>英文: A woman reads a <span class="keyword">book </span>.</span><br><span class="line"></span><br><span class="line">德文: Kinder spielen im Park.</span><br><span class="line">英文: Children playing in a park .</span><br><span class="line"></span><br><span class="line">德文: <span class="keyword">Ein </span>Mann läuft auf der Straße und <span class="keyword">ein </span>Hund folgt ihm.</span><br><span class="line">英文: A man <span class="keyword">and </span>a dog run across the street while a man follows .</span><br><span class="line"></span><br><span class="line">德文: <span class="keyword">Ein </span>kleines Mädchen malt <span class="keyword">ein </span><span class="keyword">Bild.</span></span><br><span class="line"><span class="keyword"></span>英文: A little kid is coloring a picture .</span><br><span class="line"></span><br><span class="line">德文: Der Himmel ist <span class="keyword">blau </span>und <span class="keyword">die </span>Sonne <span class="keyword">scheint.</span></span><br><span class="line"><span class="keyword"></span>英文: The sun raises the <span class="keyword">blue </span>sky .</span><br><span class="line"></span><br><span class="line">德文: <span class="keyword">Eine </span><span class="keyword">schwarze </span>Frau und <span class="keyword">ein </span>weißer Mann arbeiten in <span class="keyword">einer </span>Fabrikumgebung und packen Gläser mit Kerzen in Kartons.</span><br><span class="line">英文: A white woman <span class="keyword">and </span>a <span class="keyword">black </span>man working with <span class="keyword">jars </span>in a factory setting .</span><br><span class="line"></span><br><span class="line">德文: Zwei Kinder spielen mit <span class="keyword">einem </span><span class="keyword">Ball </span>im Garten.</span><br><span class="line">英文: Two children playing with a <span class="keyword">ball </span>in the garden .</span><br><span class="line"></span><br><span class="line">德文: Das Wetter ist heute <span class="keyword">sehr </span><span class="keyword">schön </span>und <span class="keyword">die </span>Vögel singen.</span><br><span class="line">英文: The New York &lt;unk&gt; is singing <span class="keyword">and </span>playing the accordion .</span><br><span class="line"></span><br><span class="line">德文: <span class="keyword">Ein </span>älterer Herr sitzt auf <span class="keyword">einer </span><span class="keyword">Bank </span>und füttert <span class="keyword">die </span>Tauben.</span><br><span class="line">英文: An older gentleman sitting on a <span class="keyword">bench </span><span class="keyword">and </span>smokes a cigarette .</span><br><span class="line"></span><br><span class="line">德文: <span class="keyword">Die </span>Katze liegt auf dem Sofa und <span class="keyword">schläft.</span></span><br><span class="line"><span class="keyword"></span>英文: The cat is laying on the couch <span class="keyword">and </span>sleeping .</span><br><span class="line"></span><br><span class="line">德文: <span class="keyword">Ein </span><span class="keyword">Junge </span>fährt mit seinem Fahrrad durch <span class="keyword">die </span>Stadt.</span><br><span class="line">英文: A <span class="keyword">boy </span>rides his <span class="keyword">bike </span>through the city .</span><br><span class="line"></span><br><span class="line">德文: <span class="keyword">Eine </span>Gruppe von Menschen tanzt auf <span class="keyword">einer </span>Party.</span><br><span class="line">英文: A group of people dancing <span class="built_in">at</span> a party .</span><br><span class="line"></span><br><span class="line">德文: Der Lehrer erklärt den <span class="keyword">Schülern </span><span class="keyword">die </span>Mathematikaufgaben.</span><br><span class="line">英文: The teacher is <span class="keyword">shacking </span>the picture of students who is making the teacher .</span><br><span class="line"></span><br><span class="line">德文: Das Kind <span class="keyword">baut </span><span class="keyword">eine </span>Sandburg am Strand.</span><br><span class="line">英文: The child is using a sand <span class="keyword">sculpture </span>on the <span class="keyword">beach </span>.</span><br><span class="line"></span><br><span class="line">德文: <span class="keyword">Eine </span>Frau kocht in der Küche und <span class="keyword">bereitet </span>das Abendessen zu.</span><br><span class="line">英文: A woman cooking up meat in the kitchen preparing the <span class="keyword">dish </span>.</span><br><span class="line"></span><br><span class="line">德文: Der Hund <span class="keyword">bellt </span>laut, als der Postbote ankommt.</span><br><span class="line">英文: The dog crouches while the owner watches .</span><br><span class="line"></span><br><span class="line">德文: <span class="keyword">Ein </span>Paar spaziert Hand in Hand im Park.</span><br><span class="line">英文: A couple holding hands in a park .</span><br><span class="line"></span><br><span class="line">德文: <span class="keyword">Die </span>Kinder lachen und spielen im <span class="keyword">Schnee.</span></span><br><span class="line"><span class="keyword"></span>英文: The children are playing <span class="keyword">and </span>laughing in the snow .</span><br><span class="line"></span><br><span class="line">德文: <span class="keyword">Ein </span>Musiker spielt Gitarre auf der Straße.</span><br><span class="line">英文: A musician playing the guitar on the street .</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+      </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Transformer/" rel="tag"># Transformer</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2026/06/12/multihead-PE/" rel="prev" title="多头注意力机制以及位置编码">
+                  <i class="fa fa-angle-left"></i> 多头注意力机制以及位置编码
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2026/06/12/RoPE/" rel="next" title="RoPE的数学原理及代码实现">
+                  RoPE的数学原理及代码实现 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Pandas-zwx</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"pandas-zwx/pandas-zwx.github.io","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js" defer></script>
+
+</body>
+</html>
