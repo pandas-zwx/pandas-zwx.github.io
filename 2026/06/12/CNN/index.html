@@ -20,12 +20,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"pandas-zwx.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.26.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"github","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"mac"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"utterances","active":"utterances","storage":true,"lazyload":false,"display":"post","nav":null,"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js" defer></script>
 
-    <meta name="description" content="1 CNN中的一些重要的概念 关于卷积，就是卷积核（kernel）在figure上移动，对应位置相乘然后求和（加权和）   关于池化，分为最大池化和平均池化，是一种下采样（降维），池化核（不知道能否这样叫），会计算它所覆盖的面积下的最大值&#x2F;平均值。   关于经过卷积或者池化之后，产生的特征图的维度的计算： 输出尺寸 &#x3D; (输入尺寸 - 卷积核尺寸 + 2 * 填充) &#x2F; 步幅 + 1 填充由pad">
+    <meta name="description" content="CNN的部分是在 2025年 9 月发在简书上了，现在搬运到我的 blog 上面。 1 CNN中的一些重要的概念 关于卷积，就是卷积核（kernel）在figure上移动，对应位置相乘然后求和（加权和）   关于池化，分为最大池化和平均池化，是一种下采样（降维），池化核（不知道能否这样叫），会计算它所覆盖的面积下的最大值&#x2F;平均值。   关于经过卷积或者池化之后，产生的特征图的维度的计算： 输出尺寸">
 <meta property="og:type" content="article">
-<meta property="og:title" content="CNN">
+<meta property="og:title" content="卷积神经网络">
 <meta property="og:url" content="https://pandas-zwx.github.io/2026/06/12/CNN/index.html">
 <meta property="og:site_name" content="Welcome to Pandas-zwx&#39;s channel">
-<meta property="og:description" content="1 CNN中的一些重要的概念 关于卷积，就是卷积核（kernel）在figure上移动，对应位置相乘然后求和（加权和）   关于池化，分为最大池化和平均池化，是一种下采样（降维），池化核（不知道能否这样叫），会计算它所覆盖的面积下的最大值&#x2F;平均值。   关于经过卷积或者池化之后，产生的特征图的维度的计算： 输出尺寸 &#x3D; (输入尺寸 - 卷积核尺寸 + 2 * 填充) &#x2F; 步幅 + 1 填充由pad">
+<meta property="og:description" content="CNN的部分是在 2025年 9 月发在简书上了，现在搬运到我的 blog 上面。 1 CNN中的一些重要的概念 关于卷积，就是卷积核（kernel）在figure上移动，对应位置相乘然后求和（加权和）   关于池化，分为最大池化和平均池化，是一种下采样（降维），池化核（不知道能否这样叫），会计算它所覆盖的面积下的最大值&#x2F;平均值。   关于经过卷积或者池化之后，产生的特征图的维度的计算： 输出尺寸">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://pandas-zwx.github.io/2026/06/12/CNN/input.png">
 <meta property="og:image" content="https://pandas-zwx.github.io/2026/06/12/CNN/Conv1_feature_map.png">
@@ -34,7 +34,7 @@
 <meta property="og:image" content="https://pandas-zwx.github.io/2026/06/12/CNN/Maxpool2_feature_map.png">
 <meta property="og:image" content="https://pandas-zwx.github.io/2026/06/12/CNN/test_result.png">
 <meta property="article:published_time" content="2026-06-12T03:13:08.000Z">
-<meta property="article:modified_time" content="2026-06-12T04:52:59.156Z">
+<meta property="article:modified_time" content="2026-06-12T04:54:37.047Z">
 <meta property="article:author" content="Pandas-zwx">
 <meta property="article:tag" content="CNN">
 <meta name="twitter:card" content="summary">
@@ -44,10 +44,10 @@
 <link rel="canonical" href="https://pandas-zwx.github.io/2026/06/12/CNN/">
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://pandas-zwx.github.io/2026/06/12/CNN/","path":"2026/06/12/CNN/","title":"CNN"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://pandas-zwx.github.io/2026/06/12/CNN/","path":"2026/06/12/CNN/","title":"卷积神经网络"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>CNN | Welcome to Pandas-zwx's channel</title>
+<title>卷积神经网络 | Welcome to Pandas-zwx's channel</title>
   
 
 
@@ -313,12 +313,12 @@ mjx-container[display="true"] + br {
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="CNN | Welcome to Pandas-zwx's channel">
+      <meta itemprop="name" content="卷积神经网络 | Welcome to Pandas-zwx's channel">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          CNN
+          卷积神经网络
         </h1>
 
         <div class="post-meta-container">
@@ -330,7 +330,7 @@ mjx-container[display="true"] + br {
       <span class="post-meta-item-text">Posted on</span>
       
 
-      <time title="Created: 2026-06-12 11:13:08 / Modified: 12:52:59" itemprop="dateCreated datePublished" datetime="2026-06-12T11:13:08+08:00">2026-06-12</time>
+      <time title="Created: 2026-06-12 11:13:08 / Modified: 12:54:37" itemprop="dateCreated datePublished" datetime="2026-06-12T11:13:08+08:00">2026-06-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -352,7 +352,8 @@ mjx-container[display="true"] + br {
     
     
       
-      <div class="post-body" itemprop="articleBody"><h1 id="1-CNN中的一些重要的概念"><a href="#1-CNN中的一些重要的概念" class="headerlink" title="1 CNN中的一些重要的概念"></a>1 CNN中的一些重要的概念</h1><blockquote>
+      <div class="post-body" itemprop="articleBody"><p>CNN的部分是在 2025年 9 月发在简书上了，现在搬运到我的 blog 上面。</p>
+<h1 id="1-CNN中的一些重要的概念"><a href="#1-CNN中的一些重要的概念" class="headerlink" title="1 CNN中的一些重要的概念"></a>1 CNN中的一些重要的概念</h1><blockquote>
 <p>关于卷积，就是卷积核（kernel）在figure上移动，对应位置相乘然后求和（加权和）</p>
 </blockquote>
 <blockquote>
@@ -416,10 +417,6 @@ mjx-container[display="true"] + br {
   <img src="test_result.png" alt="test_result.png">
   <figcaption>图6 test_result.png</figcaption>
 </figure>
-
-
-
-
       </div>
 
     
