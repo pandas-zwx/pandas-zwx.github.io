@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 5.4.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"pandas-zwx.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.26.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"github","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"mac"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"utterances","active":"utterances","storage":true,"lazyload":false,"display":"post","nav":null,"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="1 背景在neural machine translation的任务中，由于RNN每个时间步只能看到过去的信息，无法看到完整的上下文。除此之外，由于source language（源语言） 和 target language（目标语言）的长度可能不同，而传统的RNN输入和输出的序列必须相同，导致传统的RNN在机器翻译任务（Seq2Seq任务）上十分受限。2014年：KyungHyun Cho 和">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用Encoder-Decoder架构+LSTM完成机器翻译任务">
+<meta property="og:url" content="https://pandas-zwx.github.io/2026/06/12/Encoder-Decoder-LSTM/index.html">
+<meta property="og:site_name" content="Welcome to Pandas-zwx&#39;s channel">
+<meta property="og:description" content="1 背景在neural machine translation的任务中，由于RNN每个时间步只能看到过去的信息，无法看到完整的上下文。除此之外，由于source language（源语言） 和 target language（目标语言）的长度可能不同，而传统的RNN输入和输出的序列必须相同，导致传统的RNN在机器翻译任务（Seq2Seq任务）上十分受限。2014年：KyungHyun Cho 和">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/30288242-7002a09a7d1bddbf.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/30288242-e221add5b28b7cc0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/30288242-b7d0fdf33391967b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/30288242-3eaef9424e5771ec.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="article:published_time" content="2026-06-12T04:57:14.000Z">
+<meta property="article:modified_time" content="2026-06-12T04:57:58.503Z">
+<meta property="article:author" content="Pandas-zwx">
+<meta property="article:tag" content="CNN">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/30288242-7002a09a7d1bddbf.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+
+<link rel="canonical" href="https://pandas-zwx.github.io/2026/06/12/Encoder-Decoder-LSTM/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://pandas-zwx.github.io/2026/06/12/Encoder-Decoder-LSTM/","path":"2026/06/12/Encoder-Decoder-LSTM/","title":"使用Encoder-Decoder架构+LSTM完成机器翻译任务"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>使用Encoder-Decoder架构+LSTM完成机器翻译任务 | Welcome to Pandas-zwx's channel</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Welcome to Pandas-zwx's channel</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Chatty Animal Lover 🐾</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E8%83%8C%E6%99%AF"><span class="nav-text">1 背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-Encoder-Decoder%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="nav-text">2 Encoder-Decoder工作原理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-%E9%9C%80%E8%A6%81%E6%B3%A8%E6%84%8F%E7%9A%84%E7%82%B9"><span class="nav-text">4 需要注意的点</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Pandas-zwx</p>
+  <div class="site-description" itemprop="description">Undergraduate at Yunnan University, Master student at Fudan University Institutes of Biomedical Sciences. Love chatting, cats, dogs, and bragging.</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://pandas-zwx.github.io/2026/06/12/Encoder-Decoder-LSTM/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Pandas-zwx">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Welcome to Pandas-zwx's channel">
+      <meta itemprop="description" content="Undergraduate at Yunnan University, Master student at Fudan University Institutes of Biomedical Sciences. Love chatting, cats, dogs, and bragging.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="使用Encoder-Decoder架构+LSTM完成机器翻译任务 | Welcome to Pandas-zwx's channel">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          使用Encoder-Decoder架构+LSTM完成机器翻译任务
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2026-06-12 12:57:14 / Modified: 12:57:58" itemprop="dateCreated datePublished" datetime="2026-06-12T12:57:14+08:00">2026-06-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+      
+      <div class="post-body" itemprop="articleBody"><h1 id="1-背景"><a href="#1-背景" class="headerlink" title="1 背景"></a>1 背景</h1><p>在neural machine translation的任务中，由于RNN每个时间步只能看到过去的信息，无法看到完整的上下文。除此之外，由于source language（源语言） 和 target language（目标语言）的长度可能不同，而传统的RNN输入和输出的序列必须相同，导致传统的RNN在机器翻译任务（Seq2Seq任务）上十分受限。2014年：KyungHyun Cho 和 Yoshua Bengio 等人首次在论文 “Learning Phrase Representations using RNN Encoder-Decoder for Statistical Machine Translation“ 中提出Encoder-Decoder 架构。我给诸君画了一个简单的演示图。<br><img src="https://upload-images.jianshu.io/upload_images/30288242-7002a09a7d1bddbf.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Encoder-Decoder"></p>
+<h1 id="2-Encoder-Decoder工作原理"><a href="#2-Encoder-Decoder工作原理" class="headerlink" title="2 Encoder-Decoder工作原理"></a>2 Encoder-Decoder工作原理</h1><p>根据机器翻译任务，我也为诸君画了一个简图，来向各位说明Encoder-Decoder单独是怎么样工作的，以及是如何一起工作的。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/30288242-e221add5b28b7cc0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="working principle of Encoder"></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/30288242-b7d0fdf33391967b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="working principle of Decoder"></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/30288242-3eaef9424e5771ec.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="working princple of Seq2Seq model"></p>
+<p>#3 LSTM and Encoder-Decoder demo</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># LSTM and encoder and decoder</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">import</span> torch.nn <span class="keyword">as</span> nn</span><br><span class="line"><span class="keyword">import</span> torch.optim <span class="keyword">as</span> optim</span><br><span class="line"><span class="keyword">from</span> torch.utils.data <span class="keyword">import</span> DataLoader</span><br><span class="line"><span class="keyword">from</span> torch.nn.utils.rnn <span class="keyword">import</span> pad_sequence</span><br><span class="line"><span class="keyword">from</span> torchtext.vocab <span class="keyword">import</span> build_vocab_from_iterator</span><br><span class="line"><span class="keyword">from</span> tqdm <span class="keyword">import</span> tqdm</span><br><span class="line"><span class="keyword">import</span> spacy</span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"><span class="keyword">from</span> datasets <span class="keyword">import</span> load_dataset</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置随机种子保证可重复性</span></span><br><span class="line">random.seed(<span class="number">42</span>)</span><br><span class="line">torch.manual_seed(<span class="number">42</span>)</span><br><span class="line">torch.backends.cudnn.deterministic = <span class="literal">True</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 加载数据集</span></span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> pickle</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> os.path.exists(<span class="string">"multi30k_dataset.pkl"</span>):</span><br><span class="line">    pickle_file = <span class="string">"multi30k_dataset.pkl"</span></span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(pickle_file, <span class="string">"rb"</span>) <span class="keyword">as</span> f:</span><br><span class="line">        ds = pickle.load(f)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    ds = load_dataset(<span class="string">"bentrevett/multi30k"</span>)</span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">"multi30k_dataset.pkl"</span>, <span class="string">"wb"</span>) <span class="keyword">as</span> f:</span><br><span class="line">        pickle.dump(ds, f)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 加载分词器</span></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    spacy_en = spacy.load(<span class="string">'en_core_web_sm'</span>)</span><br><span class="line">    spacy_de = spacy.load(<span class="string">'de_core_news_sm'</span>)</span><br><span class="line"><span class="keyword">except</span> OSError:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">"请先安装spacy语言模型:"</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">"python -m spacy download en_core_web_sm"</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">"python -m spacy download de_core_news_sm"</span>)</span><br><span class="line">    exit()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 分词函数</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">tokenize_en</span>(<span class="params">text</span>):</span><br><span class="line">    <span class="keyword">return</span> [token.text <span class="keyword">for</span> token <span class="keyword">in</span> spacy_en.tokenizer(text)]</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">tokenize_de</span>(<span class="params">text</span>):</span><br><span class="line">    <span class="keyword">return</span> [token.text <span class="keyword">for</span> token <span class="keyword">in</span> spacy_de.tokenizer(text)]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> torchtext.vocab <span class="keyword">import</span> Vocab</span><br><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> Counter</span><br><span class="line"><span class="keyword">import</span> torchtext</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">yield_tokens</span>(<span class="params">data_iter, tokenizer, lang</span>):</span><br><span class="line">    <span class="keyword">for</span> example <span class="keyword">in</span> data_iter:</span><br><span class="line">        <span class="keyword">yield</span> tokenizer(example[lang])</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">build_vocab_compatible</span>(<span class="params">data_iter, tokenizer, lang, min_freq=<span class="number">2</span></span>):</span><br><span class="line">    <span class="comment"># 统计词频</span></span><br><span class="line">    counter = Counter()</span><br><span class="line">    <span class="keyword">for</span> tokens <span class="keyword">in</span> yield_tokens(data_iter, tokenizer, lang):</span><br><span class="line">        counter.update(tokens)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 根据版本选择不同的构建方式</span></span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">hasattr</span>(torchtext.vocab, <span class="string">'build_vocab_from_iterator'</span>):</span><br><span class="line">        <span class="comment"># 新版 torchtext (0.12+)</span></span><br><span class="line">        vocab = Vocab(counter,</span><br><span class="line">                     min_freq=min_freq,</span><br><span class="line">                     specials=[<span class="string">'&lt;unk&gt;'</span>, <span class="string">'&lt;pad&gt;'</span>, <span class="string">'&lt;sos&gt;'</span>, <span class="string">'&lt;eos&gt;'</span>])</span><br><span class="line">        <span class="comment"># 新版默认已经处理了未知词</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="comment"># 旧版 torchtext (&lt;0.12)</span></span><br><span class="line">        vocab = Vocab(counter,</span><br><span class="line">                     min_freq=min_freq,</span><br><span class="line">                     specials=[<span class="string">'&lt;unk&gt;'</span>, <span class="string">'&lt;pad&gt;'</span>, <span class="string">'&lt;sos&gt;'</span>, <span class="string">'&lt;eos&gt;'</span>])</span><br><span class="line">        vocab.set_default_index(vocab[<span class="string">'&lt;unk&gt;'</span>])</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> vocab</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用示例</span></span><br><span class="line">src_vocab = build_vocab_compatible(ds[<span class="string">'train'</span>], tokenize_de, <span class="string">'de'</span>, min_freq=<span class="number">2</span>)</span><br><span class="line">trg_vocab = build_vocab_compatible(ds[<span class="string">'train'</span>], tokenize_en, <span class="string">'en'</span>, min_freq=<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 编码器（Encoder）</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Encoder</span>(nn.Module):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, input_dim, emb_dim, hid_dim, n_layers, dropout</span>):</span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        <span class="variable language_">self</span>.embedding = nn.Embedding(input_dim, emb_dim)</span><br><span class="line">        <span class="variable language_">self</span>.rnn = nn.LSTM(emb_dim, hid_dim, n_layers, dropout=dropout, batch_first=<span class="literal">False</span>)</span><br><span class="line">        <span class="variable language_">self</span>.dropout = nn.Dropout(dropout)</span><br><span class="line">        </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, src</span>):</span><br><span class="line">        embedded = <span class="variable language_">self</span>.dropout(<span class="variable language_">self</span>.embedding(src))</span><br><span class="line">        outputs, (hidden, cell) = <span class="variable language_">self</span>.rnn(embedded)</span><br><span class="line">        <span class="keyword">return</span> hidden, cell</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 解码器（Decoder）</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Decoder</span>(nn.Module):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, output_dim, emb_dim, hid_dim, n_layers, dropout</span>):</span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        <span class="variable language_">self</span>.output_dim = output_dim</span><br><span class="line">        <span class="variable language_">self</span>.embedding = nn.Embedding(output_dim, emb_dim)</span><br><span class="line">        <span class="variable language_">self</span>.rnn = nn.LSTM(emb_dim, hid_dim, n_layers, dropout=dropout, batch_first=<span class="literal">False</span>)</span><br><span class="line">        <span class="variable language_">self</span>.fc_out = nn.Linear(hid_dim, output_dim)</span><br><span class="line">        <span class="variable language_">self</span>.dropout = nn.Dropout(dropout)</span><br><span class="line">        </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, <span class="built_in">input</span>, hidden, cell</span>):</span><br><span class="line">        <span class="built_in">input</span> = <span class="built_in">input</span>.unsqueeze(<span class="number">0</span>)</span><br><span class="line">        embedded = <span class="variable language_">self</span>.dropout(<span class="variable language_">self</span>.embedding(<span class="built_in">input</span>))</span><br><span class="line">        output, (hidden, cell) = <span class="variable language_">self</span>.rnn(embedded, (hidden, cell))</span><br><span class="line">        prediction = <span class="variable language_">self</span>.fc_out(output.squeeze(<span class="number">0</span>))</span><br><span class="line">        <span class="keyword">return</span> prediction, hidden, cell</span><br><span class="line"></span><br><span class="line"><span class="comment"># Seq2Seq模型</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Seq2Seq</span>(nn.Module):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, encoder, decoder, device</span>):</span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        <span class="variable language_">self</span>.encoder = encoder</span><br><span class="line">        <span class="variable language_">self</span>.decoder = decoder</span><br><span class="line">        <span class="variable language_">self</span>.device = device</span><br><span class="line">        </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, src, trg, teacher_forcing_ratio=<span class="number">0.5</span></span>):</span><br><span class="line">        batch_size = trg.shape[<span class="number">1</span>]</span><br><span class="line">        trg_len = trg.shape[<span class="number">0</span>]</span><br><span class="line">        trg_vocab_size = <span class="variable language_">self</span>.decoder.output_dim</span><br><span class="line">        </span><br><span class="line">        outputs = torch.zeros(trg_len, batch_size, trg_vocab_size).to(<span class="variable language_">self</span>.device)</span><br><span class="line">        hidden, cell = <span class="variable language_">self</span>.encoder(src)</span><br><span class="line">        <span class="comment"># input是1维张量，形状是 (batch_size,)</span></span><br><span class="line">        <span class="built_in">input</span> = trg[<span class="number">0</span>, :]</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> t <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, trg_len):</span><br><span class="line">            output, hidden, cell = <span class="variable language_">self</span>.decoder(<span class="built_in">input</span>, hidden, cell)</span><br><span class="line">            outputs[t,:,:] = output</span><br><span class="line">            teacher_force = random.random() &lt; teacher_forcing_ratio</span><br><span class="line">            <span class="comment"># top1是1维张量，形状是 (batch_size,)</span></span><br><span class="line">            top1 = output.argmax(<span class="number">1</span>)</span><br><span class="line">            <span class="built_in">input</span> = trg[t] <span class="keyword">if</span> teacher_force <span class="keyword">else</span> top1</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> outputs</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 超参数（根据词汇表大小动态设置）</span></span><br><span class="line">INPUT_DIM = <span class="built_in">len</span>(src_vocab)</span><br><span class="line">OUTPUT_DIM = <span class="built_in">len</span>(trg_vocab)</span><br><span class="line">ENC_EMB_DIM = <span class="number">256</span></span><br><span class="line">DEC_EMB_DIM = <span class="number">256</span></span><br><span class="line">HID_DIM = <span class="number">512</span></span><br><span class="line">N_LAYERS = <span class="number">2</span></span><br><span class="line">ENC_DROPOUT = <span class="number">0.5</span></span><br><span class="line">DEC_DROPOUT = <span class="number">0.5</span></span><br><span class="line">BATCH_SIZE = <span class="number">128</span></span><br><span class="line">N_EPOCHS = <span class="number">10</span></span><br><span class="line">CLIP = <span class="number">1</span></span><br><span class="line">LEARNING_RATE = <span class="number">0.001</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 设备设置</span></span><br><span class="line">device = torch.device(<span class="string">'cuda'</span> <span class="keyword">if</span> torch.cuda.is_available() <span class="keyword">else</span> <span class="string">'cpu'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 初始化模型</span></span><br><span class="line">encoder = Encoder(INPUT_DIM, ENC_EMB_DIM, HID_DIM, N_LAYERS, ENC_DROPOUT).to(device)</span><br><span class="line">decoder = Decoder(OUTPUT_DIM, DEC_EMB_DIM, HID_DIM, N_LAYERS, DEC_DROPOUT).to(device)</span><br><span class="line">model = Seq2Seq(encoder, decoder, device).to(device)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 打印参数量</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">count_parameters</span>(<span class="params">model</span>):</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">sum</span>(p.numel() <span class="keyword">for</span> p <span class="keyword">in</span> model.parameters() <span class="keyword">if</span> p.requires_grad)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f"模型参数量: <span class="subst">{count_parameters(model):,}</span>"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 优化器和损失函数</span></span><br><span class="line">optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)</span><br><span class="line">criterion = nn.CrossEntropyLoss(ignore_index=trg_vocab[<span class="string">'&lt;pad&gt;'</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 数据批处理函数</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">collate_fn</span>(<span class="params">batch</span>):</span><br><span class="line">    src_batch, trg_batch = [], []</span><br><span class="line">    <span class="keyword">for</span> example <span class="keyword">in</span> batch:</span><br><span class="line">        src = torch.tensor([src_vocab[token] <span class="keyword">for</span> token <span class="keyword">in</span> [<span class="string">'&lt;sos&gt;'</span>] + tokenize_de(example[<span class="string">'de'</span>]) + [<span class="string">'&lt;eos&gt;'</span>]])</span><br><span class="line">        trg = torch.tensor([trg_vocab[token] <span class="keyword">for</span> token <span class="keyword">in</span> [<span class="string">'&lt;sos&gt;'</span>] + tokenize_en(example[<span class="string">'en'</span>]) + [<span class="string">'&lt;eos&gt;'</span>]])</span><br><span class="line">        src_batch.append(src)</span><br><span class="line">        trg_batch.append(trg)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># pad_sequence 返回的形状是：(max_seq_len, batch_size)</span></span><br><span class="line">    src_batch = pad_sequence(src_batch, padding_value=src_vocab[<span class="string">'&lt;pad&gt;'</span>])</span><br><span class="line">    trg_batch = pad_sequence(trg_batch, padding_value=trg_vocab[<span class="string">'&lt;pad&gt;'</span>])</span><br><span class="line">    <span class="keyword">return</span> src_batch, trg_batch</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建DataLoader</span></span><br><span class="line">train_loader = DataLoader(ds[<span class="string">'train'</span>], batch_size=BATCH_SIZE, shuffle=<span class="literal">True</span>, collate_fn=collate_fn)</span><br><span class="line">valid_loader = DataLoader(ds[<span class="string">'validation'</span>], batch_size=BATCH_SIZE, collate_fn=collate_fn)</span><br><span class="line">test_loader = DataLoader(ds[<span class="string">'test'</span>], batch_size=BATCH_SIZE, collate_fn=collate_fn)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">train</span>(<span class="params">model, iterator, optimizer, criterion, clip</span>):</span><br><span class="line">    model.train()</span><br><span class="line">    epoch_loss = <span class="number">0</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> src, trg <span class="keyword">in</span> tqdm(iterator, desc=<span class="string">'Training'</span>):</span><br><span class="line">        src, trg = src.to(device), trg.to(device)</span><br><span class="line">        optimizer.zero_grad()</span><br><span class="line">        output = model(src, trg)</span><br><span class="line">        output = output[<span class="number">1</span>:].view(-<span class="number">1</span>, output.shape[-<span class="number">1</span>])</span><br><span class="line">        trg = trg[<span class="number">1</span>:].view(-<span class="number">1</span>)</span><br><span class="line">        </span><br><span class="line">        loss = criterion(output, trg)</span><br><span class="line">        loss.backward()</span><br><span class="line">        torch.nn.utils.clip_grad_norm_(model.parameters(), clip)</span><br><span class="line">        optimizer.step()</span><br><span class="line">        epoch_loss += loss.item()</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> epoch_loss / <span class="built_in">len</span>(iterator)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">evaluate</span>(<span class="params">model, iterator, criterion</span>):</span><br><span class="line">    model.<span class="built_in">eval</span>()</span><br><span class="line">    epoch_loss = <span class="number">0</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">with</span> torch.no_grad():</span><br><span class="line">        <span class="keyword">for</span> src, trg <span class="keyword">in</span> tqdm(iterator, desc=<span class="string">'Evaluating'</span>):</span><br><span class="line">            src, trg = src.to(device), trg.to(device)</span><br><span class="line">            output = model(src, trg, teacher_forcing_ratio=<span class="number">0</span>)</span><br><span class="line">            </span><br><span class="line">            output = output[<span class="number">1</span>:].view(-<span class="number">1</span>, output.shape[-<span class="number">1</span>])</span><br><span class="line">            trg = trg[<span class="number">1</span>:].view(-<span class="number">1</span>)</span><br><span class="line">            </span><br><span class="line">            loss = criterion(output, trg)</span><br><span class="line">            epoch_loss += loss.item()</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> epoch_loss / <span class="built_in">len</span>(iterator)</span><br><span class="line"></span><br><span class="line">best_valid_loss = <span class="built_in">float</span>(<span class="string">'inf'</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> epoch <span class="keyword">in</span> <span class="built_in">range</span>(N_EPOCHS):</span><br><span class="line">    train_loss = train(model, train_loader, optimizer, criterion, CLIP)</span><br><span class="line">    valid_loss = evaluate(model, valid_loader, criterion)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> valid_loss &lt; best_valid_loss:</span><br><span class="line">        best_valid_loss = valid_loss</span><br><span class="line">        torch.save(model.state_dict(), <span class="string">'best-model.pt'</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f'Epoch: <span class="subst">{epoch+<span class="number">1</span>:02}</span>'</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f'\tTrain Loss: <span class="subst">{train_loss:<span class="number">.3</span>f}</span>'</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f'\t Val. Loss: <span class="subst">{valid_loss:<span class="number">.3</span>f}</span>'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 加载最佳模型测试</span></span><br><span class="line">model.load_state_dict(torch.load(<span class="string">'best-model.pt'</span>))</span><br><span class="line">test_loss = evaluate(model, test_loader, criterion)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f'Test Loss: <span class="subst">{test_loss:<span class="number">.3</span>f}</span>'</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">translate_sentence</span>(<span class="params">sentence, model, src_vocab, trg_vocab, device, max_len=<span class="number">50</span></span>):</span><br><span class="line">    model.<span class="built_in">eval</span>()</span><br><span class="line">    <span class="comment"># 分词与数值化</span></span><br><span class="line">    tokens = [<span class="string">'&lt;sos&gt;'</span>] + tokenize_de(sentence) + [<span class="string">'&lt;eos&gt;'</span>]</span><br><span class="line">    src_indexes = [src_vocab[token] <span class="keyword">for</span> token <span class="keyword">in</span> tokens]</span><br><span class="line">    src_tensor = torch.LongTensor(src_indexes).unsqueeze(<span class="number">1</span>).to(device)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 编码器</span></span><br><span class="line">    <span class="keyword">with</span> torch.no_grad():</span><br><span class="line">        hidden, cell = model.encoder(src_tensor)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 解码器</span></span><br><span class="line">    trg_indexes = [trg_vocab[<span class="string">'&lt;sos&gt;'</span>]]</span><br><span class="line">    <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(max_len):</span><br><span class="line">        <span class="comment"># trg_indexes[-1] 将上一个时间步的预测作为当前时间步的输入</span></span><br><span class="line">        trg_tensor = torch.LongTensor([trg_indexes[-<span class="number">1</span>]]).to(device)</span><br><span class="line">        <span class="keyword">with</span> torch.no_grad():</span><br><span class="line">            output, hidden, cell = model.decoder(trg_tensor, hidden, cell)</span><br><span class="line">        pred_token = output.argmax(<span class="number">1</span>).item()</span><br><span class="line">        trg_indexes.append(pred_token)</span><br><span class="line">        <span class="keyword">if</span> pred_token == trg_vocab[<span class="string">'&lt;eos&gt;'</span>]:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 索引转单词</span></span><br><span class="line">    trg_tokens = [trg_vocab.itos[i] <span class="keyword">for</span> i <span class="keyword">in</span> trg_indexes[<span class="number">1</span>:-<span class="number">1</span>]]  <span class="comment"># 排除&lt;sos&gt;和&lt;eos&gt;</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">' '</span>.join(trg_tokens)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 示例翻译</span></span><br><span class="line">examples = [</span><br><span class="line">    <span class="string">"Ein Mann läuft auf der Straße."</span>,</span><br><span class="line">    <span class="string">"Eine Frau liest ein Buch."</span>,</span><br><span class="line">    <span class="string">"Kinder spielen im Park."</span>,</span><br><span class="line">    <span class="string">"Ein Mann läuft auf der Straße und ein Hund folgt ihm."</span></span><br><span class="line">]</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> ex <span class="keyword">in</span> examples:</span><br><span class="line">    translation = translate_sentence(ex, model, src_vocab, trg_vocab, device)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f"德文: <span class="subst">{ex}</span>"</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f"英文: <span class="subst">{translation}</span>\n"</span>)</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="训练阶段"><a href="#训练阶段" class="headerlink" title="训练阶段"></a>训练阶段</h2><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">Training</span>: <span class="number">100</span>%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| <span class="number">227</span>/<span class="number">227</span><span class="meta"> [09:44&lt;00:00,  2.57s/it]</span></span><br><span class="line"><span class="attribute">Evaluating</span>: <span class="number">100</span>%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| <span class="number">8</span>/<span class="number">8</span><span class="meta"> [00:03&lt;00:00,  2.06it/s]</span></span><br><span class="line"><span class="attribute">Epoch</span>: <span class="number">01</span></span><br><span class="line">        <span class="attribute">Train</span> Loss: <span class="number">5</span>.<span class="number">046</span></span><br><span class="line">         <span class="attribute">Val</span>. Loss: <span class="number">4</span>.<span class="number">842</span></span><br><span class="line"><span class="attribute">Training</span>: <span class="number">100</span>%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| <span class="number">227</span>/<span class="number">227</span><span class="meta"> [06:33&lt;00:00,  1.73s/it]</span></span><br><span class="line"><span class="attribute">Evaluating</span>: <span class="number">100</span>%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| <span class="number">8</span>/<span class="number">8</span><span class="meta"> [00:03&lt;00:00,  2.13it/s]</span></span><br><span class="line"><span class="attribute">Epoch</span>: <span class="number">02</span></span><br><span class="line">        <span class="attribute">Train</span> Loss: <span class="number">4</span>.<span class="number">444</span></span><br><span class="line">         <span class="attribute">Val</span>. Loss: <span class="number">4</span>.<span class="number">570</span></span><br><span class="line"><span class="attribute">Training</span>: <span class="number">100</span>%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| <span class="number">227</span>/<span class="number">227</span><span class="meta"> [06:28&lt;00:00,  1.71s/it]</span></span><br><span class="line"><span class="attribute">Evaluating</span>: <span class="number">100</span>%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| <span class="number">8</span>/<span class="number">8</span><span class="meta"> [00:03&lt;00:00,  2.18it/s]</span></span><br><span class="line"><span class="attribute">Epoch</span>: <span class="number">03</span></span><br><span class="line">        <span class="attribute">Train</span> Loss: <span class="number">4</span>.<span class="number">120</span></span><br><span class="line">         <span class="attribute">Val</span>. Loss: <span class="number">4</span>.<span class="number">337</span></span><br><span class="line"><span class="attribute">Training</span>: <span class="number">100</span>%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| <span class="number">227</span>/<span class="number">227</span><span class="meta"> [07:10&lt;00:00,  1.90s/it]</span></span><br><span class="line"><span class="attribute">Evaluating</span>: <span class="number">100</span>%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| <span class="number">8</span>/<span class="number">8</span><span class="meta"> [00:04&lt;00:00,  1.79it/s]</span></span><br><span class="line"><span class="attribute">Epoch</span>: <span class="number">04</span></span><br><span class="line">        <span class="attribute">Train</span> Loss: <span class="number">3</span>.<span class="number">890</span></span><br><span class="line">         <span class="attribute">Val</span>. Loss: <span class="number">4</span>.<span class="number">253</span></span><br><span class="line"><span class="attribute">Training</span>: <span class="number">100</span>%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| <span class="number">227</span>/<span class="number">227</span><span class="meta"> [08:23&lt;00:00,  2.22s/it]</span></span><br><span class="line"><span class="attribute">Evaluating</span>: <span class="number">100</span>%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| <span class="number">8</span>/<span class="number">8</span><span class="meta"> [00:03&lt;00:00,  2.24it/s]</span></span><br><span class="line"><span class="attribute">Epoch</span>: <span class="number">05</span></span><br><span class="line">        <span class="attribute">Train</span> Loss: <span class="number">3</span>.<span class="number">722</span></span><br><span class="line">         <span class="attribute">Val</span>. Loss: <span class="number">4</span>.<span class="number">166</span></span><br><span class="line"><span class="attribute">Training</span>: <span class="number">100</span>%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| <span class="number">227</span>/<span class="number">227</span><span class="meta"> [06:14&lt;00:00,  1.65s/it]</span></span><br><span class="line"><span class="attribute">Evaluating</span>: <span class="number">100</span>%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| <span class="number">8</span>/<span class="number">8</span><span class="meta"> [00:03&lt;00:00,  2.14it/s]</span></span><br><span class="line"><span class="attribute">Epoch</span>: <span class="number">06</span></span><br><span class="line">        <span class="attribute">Train</span> Loss: <span class="number">3</span>.<span class="number">569</span></span><br><span class="line">         <span class="attribute">Val</span>. Loss: <span class="number">4</span>.<span class="number">031</span></span><br><span class="line"><span class="attribute">Training</span>: <span class="number">100</span>%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| <span class="number">227</span>/<span class="number">227</span><span class="meta"> [06:25&lt;00:00,  1.70s/it]</span></span><br><span class="line"><span class="attribute">Evaluating</span>: <span class="number">100</span>%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| <span class="number">8</span>/<span class="number">8</span><span class="meta"> [00:03&lt;00:00,  2.19it/s]</span></span><br><span class="line"><span class="attribute">Epoch</span>: <span class="number">07</span></span><br><span class="line">        <span class="attribute">Train</span> Loss: <span class="number">3</span>.<span class="number">432</span></span><br><span class="line">         <span class="attribute">Val</span>. Loss: <span class="number">3</span>.<span class="number">977</span></span><br><span class="line"><span class="attribute">Training</span>: <span class="number">100</span>%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| <span class="number">227</span>/<span class="number">227</span><span class="meta"> [07:08&lt;00:00,  1.89s/it]</span></span><br><span class="line"><span class="attribute">Evaluating</span>: <span class="number">100</span>%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| <span class="number">8</span>/<span class="number">8</span><span class="meta"> [00:04&lt;00:00,  1.98it/s]</span></span><br><span class="line"><span class="attribute">Epoch</span>: <span class="number">08</span></span><br><span class="line">        <span class="attribute">Train</span> Loss: <span class="number">3</span>.<span class="number">324</span></span><br><span class="line">         <span class="attribute">Val</span>. Loss: <span class="number">3</span>.<span class="number">885</span></span><br><span class="line"><span class="attribute">Training</span>: <span class="number">100</span>%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| <span class="number">227</span>/<span class="number">227</span><span class="meta"> [07:50&lt;00:00,  2.07s/it]</span></span><br><span class="line"><span class="attribute">Evaluating</span>: <span class="number">100</span>%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| <span class="number">8</span>/<span class="number">8</span><span class="meta"> [00:04&lt;00:00,  1.95it/s]</span></span><br><span class="line"><span class="attribute">Epoch</span>: <span class="number">09</span></span><br><span class="line">        <span class="attribute">Train</span> Loss: <span class="number">3</span>.<span class="number">218</span></span><br><span class="line">         <span class="attribute">Val</span>. Loss: <span class="number">3</span>.<span class="number">857</span></span><br><span class="line"><span class="attribute">Training</span>: <span class="number">100</span>%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| <span class="number">227</span>/<span class="number">227</span><span class="meta"> [08:44&lt;00:00,  2.31s/it]</span></span><br><span class="line"><span class="attribute">Evaluating</span>: <span class="number">100</span>%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| <span class="number">8</span>/<span class="number">8</span><span class="meta"> [00:04&lt;00:00,  1.68it/s]</span></span><br><span class="line"><span class="attribute">Epoch</span>: <span class="number">10</span></span><br><span class="line">        <span class="attribute">Train</span> Loss: <span class="number">3</span>.<span class="number">141</span></span><br><span class="line">         <span class="attribute">Val</span>. Loss: <span class="number">3</span>.<span class="number">819</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="示例翻译"><a href="#示例翻译" class="headerlink" title="示例翻译"></a>示例翻译</h2><figure class="highlight mercury"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">德文: Ein Mann läuft auf der Straße.</span><br><span class="line">英文: A man <span class="keyword">is</span> walking on the sidewalk .</span><br><span class="line"></span><br><span class="line">德文: Eine Frau liest ein Buch.</span><br><span class="line">英文: A woman <span class="keyword">is</span> a a .</span><br><span class="line"></span><br><span class="line">德文: Kinder spielen im Park.</span><br><span class="line">英文: Children playing in a park .</span><br><span class="line"></span><br><span class="line">德文: Ein Mann läuft auf der Straße und ein Hund folgt ihm.</span><br><span class="line">英文: A man <span class="keyword">is</span> walking on the sidewalk and a dog walks on the . .</span><br></pre></td></tr></table></figure>
+
+
+<h1 id="4-需要注意的点"><a href="#4-需要注意的点" class="headerlink" title="4 需要注意的点"></a>4 需要注意的点</h1><figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># 在Seq2Seq model中，需要注意由于decoder的输入就是&lt;sos&gt;，</span></span><br><span class="line"><span class="meta"># 所以decoder的第一个输出是<span class="string">"I"</span>（假如预测的目标语言句子是<span class="string">"I love you."</span>）,</span></span><br><span class="line"><span class="meta"># 所以Seq2Seq model 的outputs的第0个时间步仍然是0，根据下面这个遍历循环我们就可以知道：</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> t <span class="keyword">in</span> range(<span class="number">1</span>, trg_len)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight clean"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"># 在计算损失之前，需要做如下变换</span><br><span class="line">output = output[<span class="number">1</span>:].view(<span class="number">-1</span>, output.shape[<span class="number">-1</span>])</span><br><span class="line">trg = trg[<span class="number">1</span>:].view(<span class="number">-1</span>)</span><br><span class="line"></span><br><span class="line"># 这是为什么呢？</span><br><span class="line"># 跟上面提到的很相关，我举一个例子</span><br><span class="line"># output是[<span class="string">""</span>,<span class="string">"我"</span>,<span class="string">"爱"</span>,<span class="string">"你"</span>,<span class="string">"&lt;eos&gt;"</span>] </span><br><span class="line"># trg是[<span class="string">"&lt;sos&gt;"</span>,<span class="string">"我"</span>,<span class="string">"爱"</span>,<span class="string">"你"</span>,<span class="string">"&lt;eos&gt;"</span>]</span><br><span class="line"># 其实就是decoder的输入是&lt;sos&gt;(trg[<span class="number">0</span>,:])，所以输出是<span class="string">"我"</span>,并没有&lt;sos&gt;，虽然output的张量的# 第<span class="number">0</span>个时间步有位置，但仍然是最开始的<span class="number">0</span>。</span><br><span class="line"># 所以计算损失的时候，把第<span class="number">0</span>个时间步去掉。</span><br></pre></td></tr></table></figure>
+
+<p>#5 </p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">&lt;sos&gt;</span>: start of <span class="built_in">string</span></span><br><span class="line"><span class="symbol">&lt;eos&gt;</span>: end of <span class="built_in">string</span></span><br><span class="line"><span class="symbol">&lt;unk&gt;</span>: unknown</span><br><span class="line"><span class="symbol">&lt;pad&gt;</span>: pad(填充)</span><br></pre></td></tr></table></figure>
+<p>#6<br>敬请期待，Transformer！！！！！</p>
+
+      </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CNN/" rel="tag"># CNN</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2026/06/12/CNN/" rel="prev" title="卷积神经网络">
+                  <i class="fa fa-angle-left"></i> 卷积神经网络
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Pandas-zwx</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"pandas-zwx/pandas-zwx.github.io","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js" defer></script>
+
+</body>
+</html>
