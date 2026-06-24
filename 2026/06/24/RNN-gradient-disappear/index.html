@@ -20,12 +20,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"pandas-zwx.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.26.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"github","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"mac"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"utterances","active":"utterances","storage":true,"lazyload":false,"display":"post","nav":null,"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js" defer></script>
 
-    <meta name="description" content="Introduction据说哈，据说 RNN 容易发生梯度爆炸和梯度消失，具体是咋发生的呢？这篇blog 将会带你仔细的去研究一下为什么梯度会爆炸，梯度会消失。 Background knowledgeIntroduction of tanh(x)      图1 激活函数tanh的函数表达式和求导法则   Matrix differentiation with activation functi">
+    <meta name="description" content="Introduction据说哈，RNN 很容易出现梯度消失和梯度爆炸。那这两个问题到底是怎么发生的呢？这篇 blog 会带你一步一步拆开 RNN 的梯度传播过程，仔细看看为什么梯度会越来越小，甚至接近 0；又为什么有时候梯度会越来越大，最后直接爆炸。 Background knowledgeIntroduction of tanh(x)      图1 激活函数tanh的函数表达式和求导法则">
 <meta property="og:type" content="article">
 <meta property="og:title" content="RNN_gradient_disappear">
 <meta property="og:url" content="https://pandas-zwx.github.io/2026/06/24/RNN-gradient-disappear/index.html">
 <meta property="og:site_name" content="Welcome to Pandas-zwx&#39;s channel">
-<meta property="og:description" content="Introduction据说哈，据说 RNN 容易发生梯度爆炸和梯度消失，具体是咋发生的呢？这篇blog 将会带你仔细的去研究一下为什么梯度会爆炸，梯度会消失。 Background knowledgeIntroduction of tanh(x)      图1 激活函数tanh的函数表达式和求导法则   Matrix differentiation with activation functi">
+<meta property="og:description" content="Introduction据说哈，RNN 很容易出现梯度消失和梯度爆炸。那这两个问题到底是怎么发生的呢？这篇 blog 会带你一步一步拆开 RNN 的梯度传播过程，仔细看看为什么梯度会越来越小，甚至接近 0；又为什么有时候梯度会越来越大，最后直接爆炸。 Background knowledgeIntroduction of tanh(x)      图1 激活函数tanh的函数表达式和求导法则">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://pandas-zwx.github.io/2026/06/24/RNN-gradient-disappear/tanh_formula.png">
 <meta property="og:image" content="https://pandas-zwx.github.io/2026/06/24/RNN-gradient-disappear/matrix_diff.png">
@@ -33,7 +33,7 @@
 <meta property="og:image" content="https://pandas-zwx.github.io/2026/06/24/RNN-gradient-disappear/core1.png">
 <meta property="og:image" content="https://pandas-zwx.github.io/2026/06/24/RNN-gradient-disappear/core2.png">
 <meta property="article:published_time" content="2026-06-24T08:47:01.000Z">
-<meta property="article:modified_time" content="2026-06-24T13:06:28.188Z">
+<meta property="article:modified_time" content="2026-06-24T13:19:16.950Z">
 <meta property="article:author" content="Pandas-zwx">
 <meta property="article:tag" content="RNN model">
 <meta name="twitter:card" content="summary">
@@ -248,7 +248,7 @@ mjx-container[display="true"] + br {
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Introduction"><span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Background-knowledge"><span class="nav-text">Background knowledge</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Mathematical-derivation"><span class="nav-text">Mathematical derivation</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Comment"><span class="nav-text">Comment</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Introduction"><span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Background-knowledge"><span class="nav-text">Background knowledge</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Mathematical-derivation"><span class="nav-text">Mathematical derivation</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Last"><span class="nav-text">Last</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Comment"><span class="nav-text">Comment</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -329,7 +329,7 @@ mjx-container[display="true"] + br {
       <span class="post-meta-item-text">Posted on</span>
       
 
-      <time title="Created: 2026-06-24 16:47:01 / Modified: 21:06:28" itemprop="dateCreated datePublished" datetime="2026-06-24T16:47:01+08:00">2026-06-24</time>
+      <time title="Created: 2026-06-24 16:47:01 / Modified: 21:19:16" itemprop="dateCreated datePublished" datetime="2026-06-24T16:47:01+08:00">2026-06-24</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -351,7 +351,7 @@ mjx-container[display="true"] + br {
     
     
       
-      <div class="post-body" itemprop="articleBody"><h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>据说哈，据说 RNN 容易发生梯度爆炸和梯度消失，具体是咋发生的呢？这篇blog 将会带你仔细的去研究一下为什么梯度会爆炸，梯度会消失。</p>
+      <div class="post-body" itemprop="articleBody"><h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>据说哈，RNN 很容易出现梯度消失和梯度爆炸。那这两个问题到底是怎么发生的呢？这篇 blog 会带你一步一步拆开 RNN 的梯度传播过程，仔细看看为什么梯度会越来越小，甚至接近 0；又为什么有时候梯度会越来越大，最后直接爆炸。</p>
 <h1 id="Background-knowledge"><a href="#Background-knowledge" class="headerlink" title="Background knowledge"></a>Background knowledge</h1><h2 id="Introduction-of-tanh-x"><a href="#Introduction-of-tanh-x" class="headerlink" title="Introduction of tanh(x)"></a>Introduction of tanh(x)</h2><figure>
   <img src="tanh_formula.png" alt="tanh_formula.png">
   <figcaption>图1 激活函数tanh的函数表达式和求导法则</figcaption>
@@ -365,7 +365,7 @@ mjx-container[display="true"] + br {
 </figure>
 因为激活函数是 element-wise 的缘故，所以出现了对角矩阵。
 
-<h1 id="Mathematical-derivation"><a href="#Mathematical-derivation" class="headerlink" title="Mathematical derivation"></a>Mathematical derivation</h1><p>既然是梯度消失和梯度爆炸，那肯定就是要算Loss 对于模型参数的偏导数了。<br>我们给出一个简化的场景：股票预测，模型的输入是过去时间每一个时间点的股票价格x，隐藏状态经过传递，得到最终时间步的隐藏状态，将最终的隐藏状态(hidden state)进行计算得到最终的一个股票预测。并计算损失。<br>Loss = L(h_t,weight)</p>
+<h1 id="Mathematical-derivation"><a href="#Mathematical-derivation" class="headerlink" title="Mathematical derivation"></a>Mathematical derivation</h1><p>既然要研究梯度消失和梯度爆炸，那么首先就要计算损失函数（Loss）对于模型参数的梯度。为了便于分析，我们先考虑一个简化的场景——股票价格预测。假设模型的输入是过去一段时间内每个时间点的股票价格 x_t。这些输入依次进入 RNN，经过隐藏状态（Hidden State）的不断传递，最终得到最后一个时间步的隐藏状态 h_T。随后利用 h_T 进行预测，得到未来某个时间点的股票价格，并计算预测值与真实值之间的损失。<br>因此，在这个简化场景下，我们可以将损失函数表示为：<br>Loss = L(h_t,weight)</p>
 <p>刚开始先不着急，让我们先从从 t=3 开始,推导隐藏状态h3对于参数w的全导数，然后推广到 t=T。</p>
 <figure>
   <img src="h3_T.png" alt="h3_T.png">
@@ -384,7 +384,7 @@ mjx-container[display="true"] + br {
 </figure>
 
 <p>最后再说一句：第 t 个时间步对于梯度的贡献取决于前面的那个连乘的系数，越早期的时间步对梯度的贡献容易过小或过大（取决于矩阵的谱半径），想象一下极端的情况就是：1.早期的时间步对梯度的贡献为 0，根本不会参与到参数更新的过程中！！！2.早期的时间步对梯度的贡献过大，参数更新的过程中出现 NaN、Inf,导致训练崩溃。</p>
-<p>在推导过程中，我们发现引起梯度消失和梯度爆炸的一个关键的原因是有一个连乘。<br>那么如果让我们想一个办法去改良 RNN 中的这个梯度爆炸的现象我们该怎么办呢？<br>我觉得我们应该首先想到的是把这个连乘给拿掉。</p>
+<h1 id="Last"><a href="#Last" class="headerlink" title="Last"></a>Last</h1><p>在推导过程中，我们发现引起梯度消失和梯度爆炸的一个关键的原因是有一个连乘。<br>那么如果让我们想一个办法去改良 RNN 中的这个梯度爆炸的现象我们该怎么办呢？<br>我觉得我们应该首先想到的是把这个连乘给拿掉。</p>
 <p>那在下一个 blog 中，我将会介绍一下 LSTM 是如何缓解梯度消失和梯度爆炸。敬请期待！</p>
 <h1 id="Comment"><a href="#Comment" class="headerlink" title="Comment"></a>Comment</h1><p>我现在就在想，如果要把所有的历史信息放到一个隐藏状态里，那肯定会涉及到遗忘。所以即使 LSTM 有做了一些改善，加了一个 cell state之类的状态，那其实还是想把所有的历史状态放到一起。</p>
 <p>为什么早期没人能想到去记录每一个时间步的隐藏状态呢？再加一个注意力机制？可能是硬件不支持吗？哈哈哈<br>“上面这段话跟梯度没有任何关系，瞎想的”</p>
