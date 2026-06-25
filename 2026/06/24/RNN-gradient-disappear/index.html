@@ -22,7 +22,7 @@
 
     <meta name="description" content="Introduction据说哈，RNN 很容易出现梯度消失和梯度爆炸。那这两个问题到底是怎么发生的呢？这篇 blog 会带你一步一步拆开 RNN 的梯度传播过程，仔细看看为什么梯度会越来越小，甚至接近 0；又为什么有时候梯度会越来越大，最后直接爆炸。 Background knowledgeIntroduction of tanh(x)      图1 激活函数tanh的函数表达式和求导法则">
 <meta property="og:type" content="article">
-<meta property="og:title" content="RNN_gradient_disappear">
+<meta property="og:title" content="RNN梯度消失和梯度爆炸的解析">
 <meta property="og:url" content="https://pandas-zwx.github.io/2026/06/24/RNN-gradient-disappear/index.html">
 <meta property="og:site_name" content="Welcome to Pandas-zwx&#39;s channel">
 <meta property="og:description" content="Introduction据说哈，RNN 很容易出现梯度消失和梯度爆炸。那这两个问题到底是怎么发生的呢？这篇 blog 会带你一步一步拆开 RNN 的梯度传播过程，仔细看看为什么梯度会越来越小，甚至接近 0；又为什么有时候梯度会越来越大，最后直接爆炸。 Background knowledgeIntroduction of tanh(x)      图1 激活函数tanh的函数表达式和求导法则">
@@ -33,7 +33,7 @@
 <meta property="og:image" content="https://pandas-zwx.github.io/2026/06/24/RNN-gradient-disappear/core1.png">
 <meta property="og:image" content="https://pandas-zwx.github.io/2026/06/24/RNN-gradient-disappear/core2.png">
 <meta property="article:published_time" content="2026-06-24T08:47:01.000Z">
-<meta property="article:modified_time" content="2026-06-24T13:19:16.950Z">
+<meta property="article:modified_time" content="2026-06-25T02:35:22.497Z">
 <meta property="article:author" content="Pandas-zwx">
 <meta property="article:tag" content="RNN model">
 <meta name="twitter:card" content="summary">
@@ -43,10 +43,10 @@
 <link rel="canonical" href="https://pandas-zwx.github.io/2026/06/24/RNN-gradient-disappear/">
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://pandas-zwx.github.io/2026/06/24/RNN-gradient-disappear/","path":"2026/06/24/RNN-gradient-disappear/","title":"RNN_gradient_disappear"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://pandas-zwx.github.io/2026/06/24/RNN-gradient-disappear/","path":"2026/06/24/RNN-gradient-disappear/","title":"RNN梯度消失和梯度爆炸的解析"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>RNN_gradient_disappear | Welcome to Pandas-zwx's channel</title>
+<title>RNN梯度消失和梯度爆炸的解析 | Welcome to Pandas-zwx's channel</title>
   
 
 
@@ -312,12 +312,12 @@ mjx-container[display="true"] + br {
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="RNN_gradient_disappear | Welcome to Pandas-zwx's channel">
+      <meta itemprop="name" content="RNN梯度消失和梯度爆炸的解析 | Welcome to Pandas-zwx's channel">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          RNN_gradient_disappear
+          RNN梯度消失和梯度爆炸的解析
         </h1>
 
         <div class="post-meta-container">
@@ -327,9 +327,15 @@ mjx-container[display="true"] + br {
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">Posted on</span>
-      
 
-      <time title="Created: 2026-06-24 16:47:01 / Modified: 21:19:16" itemprop="dateCreated datePublished" datetime="2026-06-24T16:47:01+08:00">2026-06-24</time>
+      <time title="Created: 2026-06-24 16:47:01" itemprop="dateCreated datePublished" datetime="2026-06-24T16:47:01+08:00">2026-06-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2026-06-25 10:35:22" itemprop="dateModified" datetime="2026-06-25T10:35:22+08:00">2026-06-25</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -383,7 +389,7 @@ mjx-container[display="true"] + br {
   <figcaption>图5 梯度消失和梯度爆炸的推导 2</figcaption>
 </figure>
 
-<p>最后再说一句：第 t 个时间步对于梯度的贡献取决于前面的那个连乘的系数，越早期的时间步对梯度的贡献容易过小或过大（取决于矩阵的谱半径），想象一下极端的情况就是：1.早期的时间步对梯度的贡献为 0，根本不会参与到参数更新的过程中！！！2.早期的时间步对梯度的贡献过大，参数更新的过程中出现 NaN、Inf,导致训练崩溃。</p>
+<p>最后再说一句：第 t 个时间步对于梯度的贡献取决于前面的那个连乘的系数，越早期的时间步对梯度的贡献容易过小或过大（取决于矩阵的谱半径），想象一下极端的情况就是：1.早期的时间步对梯度的贡献为 0，根本不会参与到参数更新的过程中。2.早期的时间步对梯度的贡献过大，参数更新的过程中出现 NaN、Inf,导致训练崩溃。</p>
 <h1 id="Last"><a href="#Last" class="headerlink" title="Last"></a>Last</h1><p>在推导过程中，我们发现引起梯度消失和梯度爆炸的一个关键的原因是有一个连乘。<br>那么如果让我们想一个办法去改良 RNN 中的这个梯度爆炸的现象我们该怎么办呢？<br>我觉得我们应该首先想到的是把这个连乘给拿掉。</p>
 <p>那在下一个 blog 中，我将会介绍一下 LSTM 是如何缓解梯度消失和梯度爆炸。敬请期待！</p>
 <h1 id="Comment"><a href="#Comment" class="headerlink" title="Comment"></a>Comment</h1><p>我现在就在想，如果要把所有的历史信息放到一个隐藏状态里，那肯定会涉及到遗忘。所以即使 LSTM 有做了一些改善，加了一个 cell state之类的状态，那其实还是想把所有的历史状态放到一起。</p>
