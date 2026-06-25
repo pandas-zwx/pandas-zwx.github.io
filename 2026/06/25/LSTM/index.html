@@ -20,17 +20,19 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"pandas-zwx.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.26.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"github","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"mac"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"utterances","active":"utterances","storage":true,"lazyload":false,"display":"post","nav":null,"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js" defer></script>
 
-    <meta name="description" content="Introduction书接上回，上次的 blog “RNN梯度消失和梯度爆炸的解析”中说了 LSTM 能够在一定程度上缓解&#x2F;解决梯度消失&#x2F;梯度爆炸，那么他们是怎么做到的呢？这个 blog 将会详细的研究一下这个问题。 BackgroundTanh and Sigmoid      图1 激活函数tanh和sigmid的函数表达式、求导法则以及值域   解释一下，sigmoid的值域是(0,1)，">
+    <meta name="description" content="Introduction书接上回，在上一篇 Blog《RNN 梯度消失和梯度爆炸的解析》中，我们详细分析了 RNN 为什么容易发生梯度消失和梯度爆炸，并提到 LSTM 能够在一定程度上缓解这些问题。那么，LSTM 究竟是如何做到的呢？这篇 Blog 将会从数学推导的角度，详细分析 LSTM 为什么能够缓解梯度消失和梯度爆炸。 BackgroundTanh and Sigmoid      图1 激">
 <meta property="og:type" content="article">
 <meta property="og:title" content="LSTM的梯度分析">
 <meta property="og:url" content="https://pandas-zwx.github.io/2026/06/25/LSTM/index.html">
 <meta property="og:site_name" content="Welcome to Pandas-zwx&#39;s channel">
-<meta property="og:description" content="Introduction书接上回，上次的 blog “RNN梯度消失和梯度爆炸的解析”中说了 LSTM 能够在一定程度上缓解&#x2F;解决梯度消失&#x2F;梯度爆炸，那么他们是怎么做到的呢？这个 blog 将会详细的研究一下这个问题。 BackgroundTanh and Sigmoid      图1 激活函数tanh和sigmid的函数表达式、求导法则以及值域   解释一下，sigmoid的值域是(0,1)，">
+<meta property="og:description" content="Introduction书接上回，在上一篇 Blog《RNN 梯度消失和梯度爆炸的解析》中，我们详细分析了 RNN 为什么容易发生梯度消失和梯度爆炸，并提到 LSTM 能够在一定程度上缓解这些问题。那么，LSTM 究竟是如何做到的呢？这篇 Blog 将会从数学推导的角度，详细分析 LSTM 为什么能够缓解梯度消失和梯度爆炸。 BackgroundTanh and Sigmoid      图1 激">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://pandas-zwx.github.io/2026/06/25/LSTM/tanh_sigmoid.png">
 <meta property="og:image" content="https://pandas-zwx.github.io/2026/06/25/LSTM/update_formula.png">
+<meta property="og:image" content="https://pandas-zwx.github.io/2026/06/25/LSTM/LSTM_1.png">
+<meta property="og:image" content="https://pandas-zwx.github.io/2026/06/25/LSTM/LSTM_2.png">
 <meta property="article:published_time" content="2026-06-25T04:56:06.000Z">
-<meta property="article:modified_time" content="2026-06-25T05:24:29.614Z">
+<meta property="article:modified_time" content="2026-06-25T09:24:52.512Z">
 <meta property="article:author" content="Pandas-zwx">
 <meta property="article:tag" content="LSTM model">
 <meta name="twitter:card" content="summary">
@@ -245,7 +247,7 @@ mjx-container[display="true"] + br {
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Introduction"><span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Background"><span class="nav-text">Background</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Introduction"><span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Background"><span class="nav-text">Background</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Mathematical-derivation"><span class="nav-text">Mathematical derivation</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Last"><span class="nav-text">Last</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -326,7 +328,7 @@ mjx-container[display="true"] + br {
       <span class="post-meta-item-text">Posted on</span>
       
 
-      <time title="Created: 2026-06-25 12:56:06 / Modified: 13:24:29" itemprop="dateCreated datePublished" datetime="2026-06-25T12:56:06+08:00">2026-06-25</time>
+      <time title="Created: 2026-06-25 12:56:06 / Modified: 17:24:52" itemprop="dateCreated datePublished" datetime="2026-06-25T12:56:06+08:00">2026-06-25</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -348,7 +350,7 @@ mjx-container[display="true"] + br {
     
     
       
-      <div class="post-body" itemprop="articleBody"><h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>书接上回，上次的 blog “RNN梯度消失和梯度爆炸的解析”中说了 LSTM 能够在一定程度上缓解/解决梯度消失/梯度爆炸，那么他们是怎么做到的呢？这个 blog 将会详细的研究一下这个问题。</p>
+      <div class="post-body" itemprop="articleBody"><h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>书接上回，在上一篇 Blog《RNN 梯度消失和梯度爆炸的解析》中，我们详细分析了 RNN 为什么容易发生梯度消失和梯度爆炸，并提到 LSTM 能够在一定程度上缓解这些问题。那么，LSTM 究竟是如何做到的呢？这篇 Blog 将会从数学推导的角度，详细分析 LSTM 为什么能够缓解梯度消失和梯度爆炸。</p>
 <h1 id="Background"><a href="#Background" class="headerlink" title="Background"></a>Background</h1><h2 id="Tanh-and-Sigmoid"><a href="#Tanh-and-Sigmoid" class="headerlink" title="Tanh and Sigmoid"></a>Tanh and Sigmoid</h2><figure>
   <img src="tanh_sigmoid.png" alt="tanh_sigmoid.png">
   <figcaption>图1 激活函数tanh和sigmid的函数表达式、求导法则以及值域</figcaption>
@@ -359,6 +361,26 @@ mjx-container[display="true"] + br {
   <img src="update_formula.png" alt="update_formula.png">
   <figcaption>图2 LSTM的更新公式</figcaption>
 </figure>
+
+
+<h1 id="Mathematical-derivation"><a href="#Mathematical-derivation" class="headerlink" title="Mathematical derivation"></a>Mathematical derivation</h1><figure>
+  <img src="LSTM_1.png" alt="LSTM_1.png">
+  <figcaption>图3 LSTM的梯度分析</figcaption>
+</figure>
+
+<p>在上一个讲解 RNN 的blog中，我们直接对 dh_t/d_w进行推导。<br>但是在图 3 中的推导中，我们并没有像 RNN 一样进行推导，因为c_t的更新公式中有f_t/i_t/c_t_bar/和上一个时间步的状态 c_t-1,都跟参数w有着联系，所以在这个 blog 的推导中，我们有一个 trick 就是：我们把复杂性都放到了 alpha_ck/alpha_w中了，从而简化我们的推导过程。</p>
+<figure>
+  <img src="LSTM_2.png" alt="LSTM_2.png">
+  <figcaption>图4 LSTM的梯度分析</figcaption>
+</figure>
+
+<p>最终我们发现，与 RNN 相比，LSTM 的梯度更新公式中连乘的元素变成了遗忘门f_t,而遗忘门是数据驱动的，当任务需要长期记忆时，网络可以学习出与 1 很相近的f_t，使得 f_t的连乘下降的没有那么快，从而让梯度长距离传播；当历史信息不重要时，又可以学习出较小的 f_t，主动遗忘旧信息。</p>
+<p>又因为 f_t是通过sigmoid计算出来的，而 sigmoid 的值域是(0-1),所以 LSTM 天然的能够避免梯度爆炸。<br>但是如果序列过长，连乘的f_t过多的话，早期时间步对于总梯度的贡献仍然不可避免的趋近于 0。</p>
+<p>所以 LSTM 是 <strong>缓解(mitigate)梯度消失，而不是”消除(eliminate)梯度消失</strong>。</p>
+<h1 id="Last"><a href="#Last" class="headerlink" title="Last"></a>Last</h1><p>于是，我们完成了从 RNN 到 LSTM 的更新换代。我们看到，无论是 RNN 还是 LSTM，它们都希望利用某个状态，例如隐藏状态（hidden state）或者细胞状态（cell state），去压缩并记录历史信息，再利用这个状态去预测未来。这当然是一种计算和存储都比较友好的方式。</p>
+<p>我相信先贤们肯定也想过另一种思路：既然一个状态可能记不住所有历史信息，那为什么不保留每一个时间步的信息，在需要的时候再去计算它们之间的相关性（注意力机制，咱们这里就简单把它理解成一种“相关性”吧）。不过，RNN 和 LSTM 都诞生于比较早的年代（至少我还没出生😂），当时的研究背景、计算资源以及研究重点都与今天有所不同，因此最终选择了这种利用隐藏状态传递历史信息的方案。后来随着 Attention 机制和 Transformer 的提出，这种思路才逐渐成为主流。</p>
+<p>以上纯属个人的一点感想，我并不是很了解机器学习的发展历史，嘿嘿嘿，侃大山而已啦。</p>
+
       </div>
 
     
