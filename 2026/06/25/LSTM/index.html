@@ -32,7 +32,7 @@
 <meta property="og:image" content="https://pandas-zwx.github.io/2026/06/25/LSTM/LSTM_1.png">
 <meta property="og:image" content="https://pandas-zwx.github.io/2026/06/25/LSTM/LSTM_2.png">
 <meta property="article:published_time" content="2026-06-25T04:56:06.000Z">
-<meta property="article:modified_time" content="2026-06-25T12:33:25.036Z">
+<meta property="article:modified_time" content="2026-06-25T13:55:32.956Z">
 <meta property="article:author" content="Pandas-zwx">
 <meta property="article:tag" content="LSTM model">
 <meta name="twitter:card" content="summary">
@@ -328,7 +328,7 @@ mjx-container[display="true"] + br {
       <span class="post-meta-item-text">Posted on</span>
       
 
-      <time title="Created: 2026-06-25 12:56:06 / Modified: 20:33:25" itemprop="dateCreated datePublished" datetime="2026-06-25T12:56:06+08:00">2026-06-25</time>
+      <time title="Created: 2026-06-25 12:56:06 / Modified: 21:55:32" itemprop="dateCreated datePublished" datetime="2026-06-25T12:56:06+08:00">2026-06-25</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -380,7 +380,7 @@ mjx-container[display="true"] + br {
 <h1 id="Last"><a href="#Last" class="headerlink" title="Last"></a>Last</h1><p>于是，我们完成了从 RNN 到 LSTM 的更新换代。我们看到，无论是 RNN 还是 LSTM，它们都希望利用某个状态，例如隐藏状态（hidden state）或者细胞状态（cell state），去压缩并记录历史信息，再利用这个状态去预测未来。这当然是一种计算和存储都比较友好的方式。</p>
 <p>我相信先贤们肯定也想过另一种思路：既然一个状态可能记不住所有历史信息，那为什么不保留每一个时间步的信息，在需要的时候再去计算它们之间的相关性（注意力机制，咱们这里就简单把它理解成一种“相关性”吧）。不过，RNN 和 LSTM 都诞生于比较早的年代（至少我还没出生😂），当时的研究背景、计算资源以及研究重点都与今天有所不同，因此最终选择了这种利用隐藏状态传递历史信息的方案。后来随着 Attention 机制和 Transformer 的提出，这种思路才逐渐成为主流。</p>
 <p>以上纯属个人的一点感想，我并不是很了解机器学习的发展历史，嘿嘿嘿，侃大山而已啦。</p>
-<h1 id="Final-Thoughts"><a href="#Final-Thoughts" class="headerlink" title="Final Thoughts"></a>Final Thoughts</h1><p>每天进步一点点，坚持长期主义！！</p>
+<h1 id="Final-Thoughts"><a href="#Final-Thoughts" class="headerlink" title="Final Thoughts"></a>Final Thoughts</h1><p>每天进步一点点，坚持长期主义！！<br>其实我有时候在想，推导这些东西有用吗？<br>其实我没有答案。<br>但是在我高中的时候，我想买一个习题集，我那时候的想法也是，看这本书有用吗？<br>我爹说，管他有没有用，就当练字了。<br>yeah，所以我总是这样安慰自己，写这些就当练字了。</p>
 
       </div>
 
