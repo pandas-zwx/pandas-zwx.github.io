@@ -22,14 +22,15 @@
 
     <meta name="description" content="Introduction书接上回，上次的 blog “RNN梯度消失和梯度爆炸的解析”中说了 LSTM 能够在一定程度上缓解&#x2F;解决梯度消失&#x2F;梯度爆炸，那么他们是怎么做到的呢？这个 blog 将会详细的研究一下这个问题。 BackgroundTanh and Sigmoid      图1 激活函数tanh和sigmid的函数表达式、求导法则以及值域   解释一下，sigmoid的值域是(0,1)，">
 <meta property="og:type" content="article">
-<meta property="og:title" content="LSTM">
+<meta property="og:title" content="LSTM的梯度分析">
 <meta property="og:url" content="https://pandas-zwx.github.io/2026/06/25/LSTM/index.html">
 <meta property="og:site_name" content="Welcome to Pandas-zwx&#39;s channel">
 <meta property="og:description" content="Introduction书接上回，上次的 blog “RNN梯度消失和梯度爆炸的解析”中说了 LSTM 能够在一定程度上缓解&#x2F;解决梯度消失&#x2F;梯度爆炸，那么他们是怎么做到的呢？这个 blog 将会详细的研究一下这个问题。 BackgroundTanh and Sigmoid      图1 激活函数tanh和sigmid的函数表达式、求导法则以及值域   解释一下，sigmoid的值域是(0,1)，">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://pandas-zwx.github.io/2026/06/25/LSTM/tanh_sigmoid.png">
+<meta property="og:image" content="https://pandas-zwx.github.io/2026/06/25/LSTM/update_formula.png">
 <meta property="article:published_time" content="2026-06-25T04:56:06.000Z">
-<meta property="article:modified_time" content="2026-06-25T05:20:56.106Z">
+<meta property="article:modified_time" content="2026-06-25T05:24:29.614Z">
 <meta property="article:author" content="Pandas-zwx">
 <meta property="article:tag" content="LSTM model">
 <meta name="twitter:card" content="summary">
@@ -39,10 +40,10 @@
 <link rel="canonical" href="https://pandas-zwx.github.io/2026/06/25/LSTM/">
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://pandas-zwx.github.io/2026/06/25/LSTM/","path":"2026/06/25/LSTM/","title":"LSTM"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://pandas-zwx.github.io/2026/06/25/LSTM/","path":"2026/06/25/LSTM/","title":"LSTM的梯度分析"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>LSTM | Welcome to Pandas-zwx's channel</title>
+<title>LSTM的梯度分析 | Welcome to Pandas-zwx's channel</title>
   
 
 
@@ -308,12 +309,12 @@ mjx-container[display="true"] + br {
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="LSTM | Welcome to Pandas-zwx's channel">
+      <meta itemprop="name" content="LSTM的梯度分析 | Welcome to Pandas-zwx's channel">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          LSTM
+          LSTM的梯度分析
         </h1>
 
         <div class="post-meta-container">
@@ -325,7 +326,7 @@ mjx-container[display="true"] + br {
       <span class="post-meta-item-text">Posted on</span>
       
 
-      <time title="Created: 2026-06-25 12:56:06 / Modified: 13:20:56" itemprop="dateCreated datePublished" datetime="2026-06-25T12:56:06+08:00">2026-06-25</time>
+      <time title="Created: 2026-06-25 12:56:06 / Modified: 13:24:29" itemprop="dateCreated datePublished" datetime="2026-06-25T12:56:06+08:00">2026-06-25</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -354,17 +355,10 @@ mjx-container[display="true"] + br {
 </figure>
 
 <p>解释一下，sigmoid的值域是(0,1)，用来做门控很合适，可以用来控制比例。<br>而 tanh 的值域是(-1,+1),可以用来表达一些内容丰富的东西。<br>为什么要说这些呢？诸君可以看看下面的各种门：f_t/i_t/o_t都是用的 sigmoid。<br>而涉及到中间的隐藏状态例如：c_t/h_t，使用的都是 tanh。</p>
-<h2 id="The-update-formula-of-LSTM"><a href="#The-update-formula-of-LSTM" class="headerlink" title="The update formula of LSTM"></a>The update formula of LSTM</h2><p>$$</p>
-<p>\begin{array}{l}</p>
-<p>f_t=\sigma(W_fx_t+U_fh_{t-1}+b_f)\</p>
-<p>i_t=\sigma(W_ix_t+U_ih_{t-1}+b_i)\</p>
-<p>o_t=\sigma(W_ox_t+U_oh_{t-1}+b_o)\</p>
-<p>\tilde c_t=\tanh(W_cx_t+U_ch_{t-1}+b_c)\</p>
-<p>c_t=f_t\odot c_{t-1}+i_t\odot\tilde c_t\</p>
-<p>h_t=o_t\odot\tanh(c_t)</p>
-<p>\end{array}</p>
-<p>$$</p>
-
+<h2 id="The-update-formula-of-LSTM"><a href="#The-update-formula-of-LSTM" class="headerlink" title="The update formula of LSTM"></a>The update formula of LSTM</h2><figure>
+  <img src="update_formula.png" alt="update_formula.png">
+  <figcaption>图2 LSTM的更新公式</figcaption>
+</figure>
       </div>
 
     
