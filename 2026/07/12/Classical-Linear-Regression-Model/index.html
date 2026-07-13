@@ -30,7 +30,7 @@
 <meta property="og:image" content="https://pandas-zwx.github.io/2026/07/12/Classical-Linear-Regression-Model/F1.png">
 <meta property="og:image" content="https://pandas-zwx.github.io/2026/07/12/Classical-Linear-Regression-Model/F2.png">
 <meta property="article:published_time" content="2026-07-12T09:40:35.000Z">
-<meta property="article:modified_time" content="2026-07-12T10:23:25.632Z">
+<meta property="article:modified_time" content="2026-07-13T12:41:18.839Z">
 <meta property="article:author" content="Pandas-zwx">
 <meta property="article:tag" content="Classical Linear Regression Model">
 <meta name="twitter:card" content="summary">
@@ -324,9 +324,15 @@ mjx-container[display="true"] + br {
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">Posted on</span>
-      
 
-      <time title="Created: 2026-07-12 17:40:35 / Modified: 18:23:25" itemprop="dateCreated datePublished" datetime="2026-07-12T17:40:35+08:00">2026-07-12</time>
+      <time title="Created: 2026-07-12 17:40:35" itemprop="dateCreated datePublished" datetime="2026-07-12T17:40:35+08:00">2026-07-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2026-07-13 20:41:18" itemprop="dateModified" datetime="2026-07-13T20:41:18+08:00">2026-07-13</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -365,6 +371,15 @@ mjx-container[display="true"] + br {
 
 <h1 id="Last"><a href="#Last" class="headerlink" title="Last"></a>Last</h1><p>学习这部分内容时，我最大的收获并不是 OLS 的解析解，而是对凸优化有了一个更直观的理解。以前我一直不明白，为什么求解最优点时还要去判断 Hessian 矩阵是否正定。后来结合方向导数（directional derivative）的推导才意识到，Hessian 矩阵描述的是函数在各个方向上的曲率：如果 Hessian 正定，那么函数沿任意方向的二阶导数都大于零，也就意味着目标函数是严格凸的，因此梯度为零的点一定是唯一的全局最小值。(粗浅的理解)</p>
 <p>回过头来看，一个看似简单的线性回归模型，其实已经包含了统计学、线性代数、矩阵微积分和凸优化等多个领域的基础知识，也算是给后续学习 GLM 打下了一个不错的基础，relly man? hahaha</p>
+<p>在经典线性回归模型（Classical Linear Regression Model）中，响应变量 <mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: 0;" xmlns="http://www.w3.org/2000/svg" width="1.726ex" height="1.545ex" role="img" focusable="false" viewBox="0 -683 763 683"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><path data-c="1D44C" d="M66 637Q54 637 49 637T39 638T32 641T30 647T33 664T42 682Q44 683 56 683Q104 680 165 680Q288 680 306 683H316Q322 677 322 674T320 656Q316 643 310 637H298Q242 637 242 624Q242 619 292 477T343 333L346 336Q350 340 358 349T379 373T411 410T454 461Q546 568 561 587T577 618Q577 634 545 637Q528 637 528 647Q528 649 530 661Q533 676 535 679T549 683Q551 683 578 682T657 680Q684 680 713 681T746 682Q763 682 763 673Q763 669 760 657T755 643Q753 637 734 637Q662 632 617 587Q608 578 477 424L348 273L322 169Q295 62 295 57Q295 46 363 46Q379 46 384 45T390 35Q390 33 388 23Q384 6 382 4T366 1Q361 1 324 1T232 2Q170 2 138 2T102 1Q84 1 84 9Q84 14 87 24Q88 27 89 30T90 35T91 39T93 42T96 44T101 45T107 45T116 46T129 46Q168 47 180 50T198 63Q201 68 227 171L252 274L129 623Q128 624 127 625T125 627T122 629T118 631T113 633T105 634T96 635T83 636T66 637Z"></path></g></g></g></svg></mjx-container> 是连续型随机变量。模型通常假设，在给定自变量后，响应变量服从正态分布，并且不同样本之间相互独立、具有相同的方差。</p>
+<p>广义线性模型（Generalized Linear Model，GLM）则进一步扩展了经典线性回归的适用范围。例如，当响应变量服从 Bernoulli 分布，即 <mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.439ex;" xmlns="http://www.w3.org/2000/svg" width="8.089ex" height="1.984ex" role="img" focusable="false" viewBox="0 -683 3575.2 877"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="msub"><g data-mml-node="mi"><path data-c="1D44C" d="M66 637Q54 637 49 637T39 638T32 641T30 647T33 664T42 682Q44 683 56 683Q104 680 165 680Q288 680 306 683H316Q322 677 322 674T320 656Q316 643 310 637H298Q242 637 242 624Q242 619 292 477T343 333L346 336Q350 340 358 349T379 373T411 410T454 461Q546 568 561 587T577 618Q577 634 545 637Q528 637 528 647Q528 649 530 661Q533 676 535 679T549 683Q551 683 578 682T657 680Q684 680 713 681T746 682Q763 682 763 673Q763 669 760 657T755 643Q753 637 734 637Q662 632 617 587Q608 578 477 424L348 273L322 169Q295 62 295 57Q295 46 363 46Q379 46 384 45T390 35Q390 33 388 23Q384 6 382 4T366 1Q361 1 324 1T232 2Q170 2 138 2T102 1Q84 1 84 9Q84 14 87 24Q88 27 89 30T90 35T91 39T93 42T96 44T101 45T107 45T116 46T129 46Q168 47 180 50T198 63Q201 68 227 171L252 274L129 623Q128 624 127 625T125 627T122 629T118 631T113 633T105 634T96 635T83 636T66 637Z"></path></g><g data-mml-node="mi" transform="translate(614,-150) scale(0.707)"><path data-c="1D456" d="M184 600Q184 624 203 642T247 661Q265 661 277 649T290 619Q290 596 270 577T226 557Q211 557 198 567T184 600ZM21 287Q21 295 30 318T54 369T98 420T158 442Q197 442 223 419T250 357Q250 340 236 301T196 196T154 83Q149 61 149 51Q149 26 166 26Q175 26 185 29T208 43T235 78T260 137Q263 149 265 151T282 153Q302 153 302 143Q302 135 293 112T268 61T223 11T161 -11Q129 -11 102 10T74 74Q74 91 79 106T122 220Q160 321 166 341T173 380Q173 404 156 404H154Q124 404 99 371T61 287Q60 286 59 284T58 281T56 279T53 278T49 278T41 278H27Q21 284 21 287Z"></path></g></g><g data-mml-node="mo" transform="translate(1185.7,0)"><path data-c="2208" d="M84 250Q84 372 166 450T360 539Q361 539 377 539T419 540T469 540H568Q583 532 583 520Q583 511 570 501L466 500Q355 499 329 494Q280 482 242 458T183 409T147 354T129 306T124 272V270H568Q583 262 583 250T568 230H124V228Q124 207 134 177T167 112T231 48T328 7Q355 1 466 0H570Q583 -10 583 -20Q583 -32 568 -40H471Q464 -40 446 -40T417 -41Q262 -41 172 45Q84 127 84 250Z"></path></g><g data-mml-node="TeXAtom" data-mjx-texclass="ORD" transform="translate(2130.5,0)"><g data-mml-node="mn"><path data-c="30" d="M96 585Q152 666 249 666Q297 666 345 640T423 548Q460 465 460 320Q460 165 417 83Q397 41 362 16T301 -15T250 -22Q224 -22 198 -16T137 16T82 83Q39 165 39 320Q39 494 96 585ZM321 597Q291 629 250 629Q208 629 178 597Q153 571 145 525T137 333Q137 175 145 125T181 46Q209 16 250 16Q290 16 318 46Q347 76 354 130T362 333Q362 478 354 524T321 597Z"></path></g><g data-mml-node="mo" transform="translate(500,0)"><path data-c="2C" d="M78 35T78 60T94 103T137 121Q165 121 187 96T210 8Q210 -27 201 -60T180 -117T154 -158T130 -185T117 -194Q113 -194 104 -185T95 -172Q95 -168 106 -156T131 -126T157 -76T173 -3V9L172 8Q170 7 167 6T161 3T152 1T140 0Q113 0 96 17Z"></path></g><g data-mml-node="mn" transform="translate(944.7,0)"><path data-c="31" d="M213 578L200 573Q186 568 160 563T102 556H83V602H102Q149 604 189 617T245 641T273 663Q275 666 285 666Q294 666 302 660V361L303 61Q310 54 315 52T339 48T401 46H427V0H416Q395 3 257 3Q121 3 100 0H88V46H114Q136 46 152 46T177 47T193 50T201 52T207 57T213 61V578Z"></path></g></g></g></g></svg></mjx-container> 时，经典线性回归就不再适合。</p>
+<p>因此，GLM 引入了链接函数（link function），将响应变量的条件均值与线性预测量联系起来。GLM 通常要求响应变量的条件分布属于指数分布族，并允许其方差随均值变化，因此不同样本的条件方差可以不同。</p>
+<p>GLM 的参数估计同样可以从最大似然估计出发。首先对对数似然函数求一阶导，得到得分函数，但该方程通常无法直接得到闭式解，因此需要迭代求解。</p>
+<p>大致可以从三种角度理解这一求解过程：</p>
+<p>第一种思路，是将 GLM 的得分函数改写成加权最小二乘的一阶条件，并构造一个伪响应变量。每次迭代都求解一次加权最小二乘的解析解，这一过程就是 IRLS，其更新形式与 Fisher scoring 等价。</p>
+<p>第二种思路，是继续计算对数似然函数的二阶导数，得到 Hessian 矩阵，然后直接使用 Newton–Raphson 方法迭代更新参数。</p>
+<p>第三种思路，是在 Newton–Raphson 的基础上，用 Hessian 的期望，也就是 Fisher 信息矩阵，代替实际的 Hessian，从而得到 Fisher scoring。</p>
+<p>总的来说，经典线性回归可以看作 GLM 的一个特殊情况，而 GLM 则将线性模型推广到了二分类、计数数据等更广泛的响应变量类型。</p>
 
       </div>
 
